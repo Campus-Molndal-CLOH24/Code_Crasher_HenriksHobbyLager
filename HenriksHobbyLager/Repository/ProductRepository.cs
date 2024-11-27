@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RefactoringExercise.Repositories
+
+namespace HenriksHobbyLager.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -67,5 +68,7 @@ namespace RefactoringExercise.Repositories
         {
             return _entities.Where(predicate);
         }
+
+        
     }
 }
