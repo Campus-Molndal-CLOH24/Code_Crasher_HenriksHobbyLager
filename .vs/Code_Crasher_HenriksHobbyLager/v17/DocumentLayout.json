@@ -1,12 +1,109 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\97noraja\\source\\repos\\Code_Crasher_HenriksHobbyLager\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Database\\SqliteDbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HenriksHobbyLager\\Database\\SqliteDbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Facade\\ProductFacade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HenriksHobbyLager\\Facade\\ProductFacade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HenriksHobbyLager\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Repository\\ProductRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HenriksHobbyLager\\Repository\\ProductRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Interfaces\\IProductFacade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HenriksHobbyLager\\Interfaces\\IProductFacade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SqliteDbcontext.cs",
+              "DocumentMoniker": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Database\\SqliteDbcontext.cs",
+              "RelativeDocumentMoniker": "HenriksHobbyLager\\Database\\SqliteDbcontext.cs",
+              "ToolTip": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Database\\SqliteDbcontext.cs",
+              "RelativeToolTip": "HenriksHobbyLager\\Database\\SqliteDbcontext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-27T17:33:49.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ProductFacade.cs",
+              "DocumentMoniker": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Facade\\ProductFacade.cs",
+              "RelativeDocumentMoniker": "HenriksHobbyLager\\Facade\\ProductFacade.cs",
+              "ToolTip": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Facade\\ProductFacade.cs",
+              "RelativeToolTip": "HenriksHobbyLager\\Facade\\ProductFacade.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-27T17:33:09.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Repository\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "HenriksHobbyLager\\Repository\\ProductRepository.cs",
+              "ToolTip": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Repository\\ProductRepository.cs",
+              "RelativeToolTip": "HenriksHobbyLager\\Repository\\ProductRepository.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-27T16:51:10.373Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IProductFacade.cs",
+              "DocumentMoniker": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Interfaces\\IProductFacade.cs",
+              "RelativeDocumentMoniker": "HenriksHobbyLager\\Interfaces\\IProductFacade.cs",
+              "ToolTip": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Interfaces\\IProductFacade.cs",
+              "RelativeToolTip": "HenriksHobbyLager\\Interfaces\\IProductFacade.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-26T21:51:57.784Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Program.cs",
+              "RelativeDocumentMoniker": "HenriksHobbyLager\\Program.cs",
+              "ToolTip": "C:\\Users\\yotak\\source\\repos\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\Program.cs",
+              "RelativeToolTip": "HenriksHobbyLager\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-26T15:13:34.19Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
