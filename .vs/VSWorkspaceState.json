@@ -1,6 +1,13 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\HenriksHobbyLager",
+    "\\HenriksHobbyLager\\Database",
+    "\\HenriksHobbyLager\\Facade",
+    "\\HenriksHobbyLager\\Interfaces",
+    "\\HenriksHobbyLager\\Models",
+    "\\HenriksHobbyLager\\Repository"
   ],
+  "SelectedNode": "\\HenriksHobbyLager.sln",
   "PreviewInSolutionExplorer": false
 }
