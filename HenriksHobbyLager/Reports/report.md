@@ -4,6 +4,7 @@ Svara på frågorna nedan och lämna in det som en del av din inlämning.
 
 ## Hur fungerade gruppens arbete?
 
+
 ## Beskriv gruppens databasimplementation
 
 ## Vilka SOLID-principer implementerade ni och hur?
