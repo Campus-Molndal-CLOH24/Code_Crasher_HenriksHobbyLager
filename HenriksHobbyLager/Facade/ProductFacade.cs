@@ -1,11 +1,15 @@
 ﻿using System;
+using HenriksHobbyLager.Interfaces;
+namespace HenriksHobbyLager.Facade;
 
 public class ProductFacade : IProductFacade
 {
-    private readonly IProductRepository _productRepository;
-    void GetAllProducts()
+    private readonly IRepository<Product> _productRepository;
+    public ProductFacade(IRepository<Product> productRepository)
     {
-        return _productRepository.GetAllProducts();
+        _productRepository = productRepository;
+    }
+
         public IEnumerable<Product> GetAllProducts()
         {
             return _productRepository.GetAll();
@@ -48,6 +52,6 @@ public class ProductFacade : IProductFacade
         {
             return _productRepository.Search(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
-    }
+    
 
 }
