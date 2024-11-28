@@ -68,6 +68,12 @@ public static class MenuService
     {
         Console.WriteLine("Ange produktnamn:");
         var name = Console.ReadLine();
+        
+        if (string.IsNullOrEmpty(name))
+        {
+            Console.WriteLine("Produktnamn kan inte vara tomt!");
+            return;
+        }
 
         Console.WriteLine("Ange pris:");
         if (decimal.TryParse(Console.ReadLine(), out decimal price))
