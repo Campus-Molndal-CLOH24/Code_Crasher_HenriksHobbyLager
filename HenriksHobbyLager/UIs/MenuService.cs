@@ -1,8 +1,11 @@
 ﻿using System;
-namespace HenriksHobbyLager.UIs;
 using System.Collections.Generic;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
+using HenriksHobbyLager.Models;
+
+namespace HenriksHobbyLager.UIs;
+
 
 public static class MenuService
 {
