@@ -9,7 +9,7 @@ public class Product
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public string? Category { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime? Created { get; set; }
     public DateTime? LastUpdated { get; set; }  // it means the property can hold a null value.
 
 // Add this method to define indexes in  databas (task 2.3.2)
