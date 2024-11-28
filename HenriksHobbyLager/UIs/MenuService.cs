@@ -151,7 +151,7 @@ public static class MenuService
         var searchTerm = Console.ReadLine()?.ToLower() ?? "";
 
         var products = _context.Product
-            .Where(p => p.Name.ToLower().Contains(searchTerm))
+            .Where(p => p.Name != null && p.Name.ToLower().Contains(searchTerm))
             .ToList();
 
         foreach (var product in products)
