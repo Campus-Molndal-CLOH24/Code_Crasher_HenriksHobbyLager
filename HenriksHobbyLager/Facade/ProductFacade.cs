@@ -51,7 +51,7 @@ public class ProductFacade : IProductFacade
 
         public IEnumerable<Product> SearchProducts(string searchTerm)
         {
-            return _productRepository.Search(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            return _productRepository.Search(p => p.Name != null && p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
     
 
