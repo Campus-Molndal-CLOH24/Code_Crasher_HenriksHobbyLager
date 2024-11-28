@@ -6,6 +6,7 @@ using HenriksHobbyLager.Database;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 
@@ -19,16 +20,15 @@ namespace HenriksHobbyLager
             var options = new DbContextOptionsBuilder<SqliteDbcontext>()
                 .UseSqlite("Data Source=ProductsHobbyLager.db") // Use your actual SQLite database connection string here
                 .Options;
-                // add product 
+            // add product 
             using (var context = new SqliteDbcontext(options))
             {
                 // Add some products if not already in the database
                 if (!context.Product.Any())
                 {
                     context.Product.AddRange(
-                        new Product { Name = "Laptop", Price = 1000, Stock = 10 },
-                        new Product { Name = "Phone", Price = 500, Stock = 20 },
-                        new Product { Name = "Tablet", Price = 300, Stock = 15 }
+                        new Product { Name = "SuperCar", Price = 1500, Stock = 20, Category = "Cars", Created = new DateTime(2024, 3, 15, 14, 30, 0, DateTimeKind.Utc), LastUpdated = DateTime.Now }
+
                     );
                     context.SaveChanges();
                 }
@@ -40,7 +40,7 @@ namespace HenriksHobbyLager
                 var productRepository = new ProductRepository(context);
 
                 // Step 3: Test SearchByName method with some search terms
-                var searchTerm = "Lap"; // Searching for products with "Lap" in the name
+                var searchTerm = "Sup"; // Searching for products with "Lap" in the name
                 var result = productRepository.SearchByName(searchTerm);
 
                 // Step 4: Output the search results to the console
@@ -48,6 +48,15 @@ namespace HenriksHobbyLager
                 foreach (var product in result)
                 {
                     Console.WriteLine($"Found: {product.Name}");
+                }
+            }
+            using (var context = new SqliteDbcontext(options))
+            {
+                var products = context.Product.ToList();
+                Console.WriteLine("All Products in Database:");
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"Product: {product.Name}, Price: {product.Price}, Stock: {product.Stock}");
                 }
             }
 

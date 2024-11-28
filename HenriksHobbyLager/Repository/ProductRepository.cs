@@ -74,8 +74,7 @@ namespace HenriksHobbyLager.Repositories
             }
             return _dbSet
                 .AsEnumerable()
-                .Where(p => p.Name != null && p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+                .Where(p => p.Name != null && p.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
         }
     }
     
