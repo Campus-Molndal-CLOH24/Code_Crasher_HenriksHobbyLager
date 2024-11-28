@@ -1,5 +1,6 @@
 ﻿using System;
 using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
 namespace HenriksHobbyLager.Facade;
 
 public class ProductFacade : IProductFacade
