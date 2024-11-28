@@ -13,5 +13,13 @@ namespace HenriksHobbyLager.Database
         
             => optionsBuilder.UseSqlite("Data Source=ProductsHobbyLager.db");
         
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            // Configure indexes for Product table
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Name);  // Example: creating an index on the Name property
+        }
     }
 }
