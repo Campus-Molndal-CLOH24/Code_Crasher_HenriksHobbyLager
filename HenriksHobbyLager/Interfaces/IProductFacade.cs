@@ -1,4 +1,5 @@
 namespace HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
 
 public interface IProductFacade
 {
