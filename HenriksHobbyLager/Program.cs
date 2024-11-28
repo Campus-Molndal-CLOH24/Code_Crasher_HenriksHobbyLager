@@ -11,16 +11,7 @@ using HenriksHobbyLager.Repositories;
 
 namespace HenriksHobbyLager
 {
-    static class Program
-    {
-        static void Main(string[] args)
-        {
-            
-            
-            
-            // Your other code here
-        }
-    }
+    
 }
 
 

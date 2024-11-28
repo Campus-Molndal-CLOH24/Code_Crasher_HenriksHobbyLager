@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Repositories;
+
 
 
 namespace HenriksHobbyLager.Repositories
