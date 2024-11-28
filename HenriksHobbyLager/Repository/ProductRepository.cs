@@ -9,6 +9,7 @@ namespace HenriksHobbyLager.Repositories
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly List<T> _entities;
+
         private int _nextId;
 
         public Repository()
@@ -21,14 +22,15 @@ namespace HenriksHobbyLager.Repositories
         {
             return _entities;
         }
-
+// get id properties from class 
         public T GetById(int id)
         {
             var property = typeof(T).GetProperty("Id");
             if (property == null)
                 throw new InvalidOperationException("T måste ha en Id-egenskap.");
 
-            return _entities.FirstOrDefault(e => (int)property.GetValue(e) == id);
+            return _entities.Find(e => (int?)property.GetValue(e) == id) ?? 
+                   throw new InvalidOperationException($"Entity with id {id} not found.");
         }
 
         public void Add(T entity)
@@ -47,7 +49,7 @@ namespace HenriksHobbyLager.Repositories
             if (property == null)
                 throw new InvalidOperationException("T måste ha en Id-egenskap.");
 
-            int id = (int)property.GetValue(entity);
+            int id = (int)(property.GetValue(entity) ?? throw new InvalidOperationException("Id cannot be null"));
             var existingEntity = GetById(id);
             if (existingEntity != null)
             {
