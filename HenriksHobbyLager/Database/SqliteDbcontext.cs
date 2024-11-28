@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
-using HenriksHobbyLager.Models;
+
 
 namespace HenriksHobbyLager.Database
 {
-    public class ApplicationDbcontext : DbContext
+    public class SqliteDbcontext : DbContext
     {
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Product { get; set; } = null!;
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=HobbyLager.db");
+            optionsBuilder.UseSqlite("Data Source=ProductsHobbyLager.db");
         }
     }
 }
