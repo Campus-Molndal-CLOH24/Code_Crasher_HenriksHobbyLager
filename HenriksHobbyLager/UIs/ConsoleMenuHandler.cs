@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
+using System.IO;
+using System.Globalization;
 
 namespace HenriksHobbyLager.UIs;
 static class ConsoleMenuHandler
@@ -84,20 +86,27 @@ static class ConsoleMenuHandler
 
             if (int.TryParse(Console.ReadLine(), out int stock) && stock >= 0)
             {
-                var product = new Product
+                Console.WriteLine("Ange datum och tid för skapandet (yyyy-MM-dd):");
+                DateTime createDate;
+                if (DateTime.TryParse(Console.ReadLine(), CultureInfo.InvariantCulture, DateTimeStyles.None, out createDate))
                 {
-                    Name = name,
-                    Price = price,
-                    Stock = stock
-                };
+                    var product = new Product
+                    {
+                        Name = name,
+                        Price = price,
+                        Stock = stock,
+                        Created = createDate,
+                        LastUpdated = DateTime.UtcNow
+                    };
 
-                _context.Product.Add(product);
-                _context.SaveChanges();
-                Console.WriteLine("Produkt tillagd!");
-            }
-            else
-            {
-                Console.WriteLine("Ogiltigt antal i lager.");
+                    _context.Product.Add(product);
+                    _context.SaveChanges();
+                    Console.WriteLine("Produkt tillagd!");
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltigt antal i lager.");
+                }
             }
         }
         catch (Exception ex)
@@ -118,7 +127,7 @@ static class ConsoleMenuHandler
         }
     }
 
-//updated error handling 
+    //updated error handling 
     private static void UpdateProduct()
     {
         Console.WriteLine("Ange produkt-ID att uppdatera:");
@@ -149,9 +158,9 @@ static class ConsoleMenuHandler
                 }
             }
             else
-                {
-                    Console.WriteLine("Produkt hittades inte!");
-                }
+            {
+                Console.WriteLine("Produkt hittades inte!");
+            }
         }
     }
 
