@@ -9,6 +9,9 @@ using System.Globalization;
 namespace HenriksHobbyLager.UIs;
 static class ConsoleMenuHandler
 {
+    // create a new instance of SqliteDbcontext
+    //It creates a connection to your SQLite database and act like a bridge between your code and the database.
+    //also help with data management operations.
     private static readonly SqliteDbcontext _context = new SqliteDbcontext(
     new DbContextOptionsBuilder<SqliteDbcontext>()
         .UseSqlite("Data Source=ProductsHobbyLager.db")

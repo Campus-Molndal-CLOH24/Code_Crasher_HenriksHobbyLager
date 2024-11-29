@@ -15,6 +15,9 @@ namespace HenriksHobbyLager.Database
        
 
         // Constructor that accepts DbContextOptions
+        // need it becuase need to create instance of SqliteDbcontext and makes it possible to configure the DbContext
+        // and pass the configuration to the base class DbContext. EF won't know how to create the instance.
+        //if we delect it we get error on the console menu handler.
         public SqliteDbcontext(DbContextOptions<SqliteDbcontext> options) 
             : base(options)
         {
