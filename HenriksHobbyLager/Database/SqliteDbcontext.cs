@@ -33,7 +33,8 @@ namespace HenriksHobbyLager.Database
 
             // Configure indexes for Product table
             modelBuilder.Entity<Product>()
-                .HasIndex(p => p.Name);  // creating an index on the Name property
+                .HasIndex(p => p.Name)
+                .IsUnique();  // creating an index on the Name property
         }
     }
     // DesignTimeDbContextFactory for migrations , it shows on error when i ran ef migrations add that i need to add thses class for 
