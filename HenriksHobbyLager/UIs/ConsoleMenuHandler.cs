@@ -1,24 +1,48 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Facade;
 using System.IO;
 using System.Globalization;
+using MongoDB.Driver;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace HenriksHobbyLager.UIs;
-static class ConsoleMenuHandler
+class ConsoleMenuHandler
 {
+    private readonly IProductFacade _facade;
+    private readonly IRepository<Product> _repository;
     
-    // create a new instance of SqliteDbcontext
-    //It creates a connection to your SQLite database and act like a bridge between your code and the database.
-    //also help with data management operations.
-    private static readonly SqliteDbcontext _context = new SqliteDbcontext(
-    new DbContextOptionsBuilder<SqliteDbcontext>()
-        .UseSqlite("Data Source=ProductsHobbyLager.db")
-        .Options);
+    
+    public ConsoleMenuHandler()
+    {
+        // Load configuration from appsettings.json
+        var _configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
 
-    public static void ShowMainMenu()
+        // Use connection strings from configuration
+        var sqlContext = new SqliteDbcontext(
+            new DbContextOptionsBuilder<SqliteDbcontext>()
+                .UseSqlite(_configuration.GetConnectionString("SqliteConnection"))
+                .Options);
+
+        var mongoClient = new MongoClient(_configuration.GetConnectionString("MongoConnection"));
+        var mongoDatabase = mongoClient.GetDatabase(_configuration.GetConnectionString("MongoDatabase"));
+
+        var _repositoryFactory = new RepositoryFactory(mongoDatabase, sqlContext);
+        var _databaseMenu = new DatabaseMenu(_repositoryFactory);
+        _repository = _databaseMenu.GetSelectedRepository();
+        _facade = new ProductFacade(_repository);
+       
+    }
+
+    public void ShowMainMenu()
     {
         while (true)
         {
@@ -63,16 +87,16 @@ static class ConsoleMenuHandler
         }
     }
 
-    private static void ShowAllProducts()
+    private void ShowAllProducts()
     {
-        var products = _context.Product.ToList();
+        var products = _facade.GetAllProducts();
         foreach (var product in products)
         {
             Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price}kr, Lager: {product.Stock}");
         }
     }
     // use error handling to controll user input
-    private static void AddProduct()
+    private void AddProduct()
     {
         try
         {
@@ -103,8 +127,8 @@ static class ConsoleMenuHandler
                         LastUpdated = DateTime.UtcNow
                     };
 
-                    _context.Product.Add(product);
-                    _context.SaveChanges();
+                    _repository.Add(product);
+                   // _repository.SaveChanges();
                     Console.WriteLine("Produkt tillagd!");
                 }
                 else
@@ -132,12 +156,12 @@ static class ConsoleMenuHandler
     }
 
     //updated error handling 
-    private static void UpdateProduct()
+    private void UpdateProduct()
     {
         Console.WriteLine("Ange produkt-ID att uppdatera:");
         if (int.TryParse(Console.ReadLine(), out int id))
         {
-            var product = _context.Product.Find(id);
+            var product = _repository.GetById(id);
             if (product != null)
             {
                 Console.WriteLine("Ange nytt namn (eller tryck Enter för att behålla nuvarande):");
@@ -152,7 +176,7 @@ static class ConsoleMenuHandler
 
                 try
                 {
-                    _context.SaveChanges(); // Database operation to save changes
+                    _repository.Update(product); // change from savechanges to update
                     Console.WriteLine("Produkt uppdaterad!");
                 }
                 catch (Exception ex)
@@ -168,16 +192,15 @@ static class ConsoleMenuHandler
         }
     }
 
-    private static void DeleteProduct()
+    private void DeleteProduct()
     {
         Console.WriteLine("Ange produkt-ID att ta bort:");
         if (int.TryParse(Console.ReadLine(), out int id))
         {
-            var product = _context.Product.Find(id);
+            var product = _repository.GetById(id);
             if (product != null)
             {
-                _context.Product.Remove(product);
-                _context.SaveChanges();
+                _repository.Delete(id);
                 Console.WriteLine("Produkt borttagen!");
             }
             else
@@ -187,12 +210,12 @@ static class ConsoleMenuHandler
         }
     }
 
-    private static void SearchProducts()
+    private void SearchProducts()
     {
         Console.WriteLine("Ange sökterm:");
         var searchTerm = Console.ReadLine()?.ToLower() ?? "";
 
-        var products = _context.Product
+        var products = _facade.GetAllProducts()
             .Where(p => p.Name != null && p.Name.ToLower().Contains(searchTerm))
             .ToList();
 

@@ -17,7 +17,8 @@ namespace HenriksHobbyLager
     {
         static void Main(string[] args)
         {
-            ConsoleMenuHandler.ShowMainMenu();
+            var menuHandler = new ConsoleMenuHandler();
+            menuHandler.ShowMainMenu();
         }
     }
 }
