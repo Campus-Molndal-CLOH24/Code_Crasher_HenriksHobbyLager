@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
-using System.IO;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
+
 
 
 namespace HenriksHobbyLager.Database
 {
     public class SqliteDbcontext : DbContext
     {
-        public DbSet<Product> Product { get; set; } = null!;
+        //help prevent null reference exceptions by making nullability explicit in my code.
+        // i get waring when i ran dotnet build and it showed that i need to set null! to Product 
+        // becuase it is a nullable reference type. 
+        public DbSet<Product> Product { get; set; } = null!; 
        
 
         // Constructor that accepts DbContextOptions
@@ -31,6 +33,8 @@ namespace HenriksHobbyLager.Database
                 .HasIndex(p => p.Name);  // creating an index on the Name property
         }
     }
+    // DesignTimeDbContextFactory for migrations , it shows on error when i ran ef migrations add that i need to add thses class for 
+    // run migrations it about the datetime too when we creted entity get rekommenn from error and checked on microsoft docu
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SqliteDbcontext>
     {
         public SqliteDbcontext CreateDbContext(string[] args)
