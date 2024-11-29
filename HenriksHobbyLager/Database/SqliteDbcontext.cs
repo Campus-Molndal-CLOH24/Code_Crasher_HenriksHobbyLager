@@ -11,14 +11,14 @@ namespace HenriksHobbyLager.Database
         //help prevent null reference exceptions by making nullability explicit in my code.
         // i get waring when i ran dotnet build and it showed that i need to set null! to Product 
         // becuase it is a nullable reference type. 
-        public DbSet<Product> Product { get; set; } = null!; 
-       
+        public DbSet<Product> Product { get; set; } = null!;
+
 
         // Constructor that accepts DbContextOptions
         // need it becuase need to create instance of SqliteDbcontext and makes it possible to configure the DbContext
         // and pass the configuration to the base class DbContext. EF won't know how to create the instance.
         //if we delect it we get error on the console menu handler.
-        public SqliteDbcontext(DbContextOptions<SqliteDbcontext> options) 
+        public SqliteDbcontext(DbContextOptions<SqliteDbcontext> options)
             : base(options)
         {
         }
