@@ -26,14 +26,3 @@ public class Product
     public DateTime? LastUpdated { get; set; } // Nullable för att tillåta null-värden
 }
 
-// Definiera DbContext
-public class ApplicationDbContext : DbContext
-{
-    public DbSet<Product> Products { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=HobbyLager.db"); // Konfigurera SQLite
-    }
-
-}
