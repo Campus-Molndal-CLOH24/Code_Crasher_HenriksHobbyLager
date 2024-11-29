@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using HenriksHobbyLager.Models;
-
 namespace HenriksHobbyLager.Database
 {
     public class ApplicationDbcontext : DbContext
