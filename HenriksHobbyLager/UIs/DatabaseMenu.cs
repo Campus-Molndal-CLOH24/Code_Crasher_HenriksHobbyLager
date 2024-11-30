@@ -20,9 +20,10 @@ public class DatabaseMenu
         {
             Console.Clear();
             Console.WriteLine("Select Database Type: ");
-            Console.WriteLine("1. SQL");
-            Console.WriteLine("2. MongoDB");
-            Console.Write("Enter your choice (1 or 2): ");
+            Console.WriteLine("1. MongoDB");
+            Console.WriteLine("2. SQL");
+            Console.WriteLine("3. SQLite");
+            Console.Write("Enter your choice (1 or 2 or 3): ");
             string choice = Console.ReadLine() ?? string.Empty;
 
             switch (choice)
@@ -31,6 +32,8 @@ public class DatabaseMenu
                     return DatabaseType.SQLite;
                 case "2":
                     return DatabaseType.MongoDB;
+                case "3":
+                    return DatabaseType.SQLite;
                 default:
                     Console.WriteLine("\nInvalid choice. Press any key to try again.");
                     Console.ReadKey();

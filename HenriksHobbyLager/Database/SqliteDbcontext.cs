@@ -2,12 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore.Sqlite;
 
 
 namespace HenriksHobbyLager.Database
 {
-    public class SqlDbcontext : DbContext
+    public class SqliteDbcontext : DbContext
     {
         //help prevent null reference exceptions by making nullability explicit in my code.
         // i get waring when i ran dotnet build and it showed that i need to set null! to Product 
@@ -19,14 +19,14 @@ namespace HenriksHobbyLager.Database
         // need it becuase need to create instance of SqliteDbcontext and makes it possible to configure the DbContext
         // and pass the configuration to the base class DbContext. EF won't know how to create the instance.
         //if we delect it we get error on the console menu handler.
-        public SqlDbcontext(DbContextOptions<SqlDbcontext> options)
+        public SqliteDbcontext(DbContextOptions<SqliteDbcontext> options)
             : base(options)
         {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
-            => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS,1433;Database=ProductsHobbyLager;Integrated Security=True;TrustServerCertificate=True");
+            => optionsBuilder.UseSqlite("Data Source=ProductsHobbyLager.db");
         // Configure indexes for Product table (task 2.3.2)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,16 +40,16 @@ namespace HenriksHobbyLager.Database
     }
     // DesignTimeDbContextFactory for migrations , it shows on error when i ran ef migrations add that i need to add thses class for 
     // run migrations it about the datetime too when we creted entity get rekommenn from error and checked on microsoft docu
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SqlDbcontext>
+    public class SqliteDesignTimeDbContextFactory : IDesignTimeDbContextFactory<SqliteDbcontext>
     {
-        public SqlDbcontext CreateDbContext(string[] args)
+        public SqliteDbcontext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<SqlDbcontext>();
+            var optionsBuilder = new DbContextOptionsBuilder<SqliteDbcontext>();
 
             // Use the same SQLite connection string as in your runtime code
-            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS,1433;Database=ProductsHobbyLager;Integrated Security=True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlite("Data Source=ProductsHobbyLager.db");
 
-            return new SqlDbcontext(optionsBuilder.Options);
+            return new SqliteDbcontext(optionsBuilder.Options);
         }
     }
 }
