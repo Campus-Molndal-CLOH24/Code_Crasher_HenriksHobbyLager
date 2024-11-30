@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
@@ -18,28 +17,15 @@ class ConsoleMenuHandler
     private readonly IRepository<Product> _repository;
     
     
-    public ConsoleMenuHandler()
+    
+    public ConsoleMenuHandler(IConfiguration configuration, IProductFacade facade, DatabaseFactory databaseFactory)
     {
-        // Load configuration from appsettings.json
-        var _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Use connection strings from configuration
-        var sqlContext = new SqliteDbcontext(
-            new DbContextOptionsBuilder<SqliteDbcontext>()
-                .UseSqlite(_configuration.GetConnectionString("SqliteConnection"))
-                .Options);
-
-        var mongoClient = new MongoClient(_configuration.GetConnectionString("MongoConnection"));
-        var mongoDatabase = mongoClient.GetDatabase(_configuration.GetConnectionString("MongoDatabase"));
-
-        var _repositoryFactory = new RepositoryFactory(mongoDatabase, sqlContext);
-        var _databaseMenu = new DatabaseMenu(_repositoryFactory);
+        // Initialize the repository based on selected database
+        var _databaseMenu = new DatabaseMenu(databaseFactory);
         _repository = _databaseMenu.GetSelectedRepository();
-        _facade = new ProductFacade(_repository);
-       
+
+        // Initialize the facade with the selected repository
+        _facade = facade;
     }
 
     public void ShowMainMenu()
@@ -82,9 +68,12 @@ class ConsoleMenuHandler
                     break;
             }
 
-            Console.WriteLine("\nTryck på valfri tangent för att fortsätta... (helst inte ESC)");
-            Console.ReadKey();
         }
+    }
+    private void WaitForUserInput()
+    {
+        Console.WriteLine("\nTryck på valfri tangent för att fortsätta... (helst inte ESC)");
+        Console.ReadKey();
     }
 
     private void ShowAllProducts()

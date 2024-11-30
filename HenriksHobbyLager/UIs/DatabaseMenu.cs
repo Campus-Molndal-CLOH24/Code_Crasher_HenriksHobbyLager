@@ -1,5 +1,6 @@
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Repository;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
@@ -7,11 +8,11 @@ namespace HenriksHobbyLager.UIs;
 
 public class DatabaseMenu
 {
-    private readonly RepositoryFactory _repositoryFactory;
-    
-    public DatabaseMenu(RepositoryFactory repositoryFactory)
+    private readonly DatabaseFactory _databaseFactory;
+
+    public DatabaseMenu(DatabaseFactory databaseFactory)
     {
-        _repositoryFactory = repositoryFactory;
+        _databaseFactory = databaseFactory;
     }
     public static DatabaseType ShowDatabaseMenu()
     {
@@ -37,10 +38,11 @@ public class DatabaseMenu
             }
         }
     }
+    // Get the appropriate repository based on the database choice
     public IRepository<Product> GetSelectedRepository()
     {
         var databaseType = ShowDatabaseMenu();
-        return _repositoryFactory.CreateRepository(databaseType);
+        return _databaseFactory.CreateRepository(databaseType);
     }
 }
 

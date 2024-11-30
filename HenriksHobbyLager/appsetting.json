@@ -1,8 +1,0 @@
-
-{
-    "ConnectionStrings": {
-      "SqliteConnection": "Data Source=ProductsHobbyLager.db",
-      "MongoConnection": "mongodb://localhost:27017",
-      "MongoDatabase": "HenriksHobbyLager"
-    }
-}
