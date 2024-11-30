@@ -6,7 +6,7 @@ using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Repository;
 using HenriksHobbyLager.Interfaces;
 
-namespace HenriksHobbyLager;
+namespace HenriksHobbyLager.Repository;
 
 public enum DatabaseType
 {
@@ -17,34 +17,33 @@ public enum DatabaseType
 
 public class DatabaseFactory
 {
-    private readonly MongoDbContext _mongoDbContext;
     
-    private readonly SqlDbcontext _sqlDbcontext;
-    private readonly SqliteDbcontext _sqliteDbcontext;
+    private readonly SqlDbcontext _sqlContext;
+    private readonly MongoDbContext _mongoContext;
+    private readonly SqliteDbcontext _sqliteContext;
+   
 
-    public DatabaseFactory(SqlDbcontext sqlDbcontext, MongoDbContext mongoDbContext, SqliteDbcontext sqliteDbcontext)
+    public DatabaseFactory( SqlDbcontext sqlContext, MongoDbContext mongoContext, SqliteDbcontext sqliteContext)
     {
-        _mongoDbContext = mongoDbContext;
         
-        _sqlDbcontext = sqlDbcontext;
-        _sqliteDbcontext = sqliteDbcontext;
+        _sqlContext = sqlContext;
+        _mongoContext = mongoContext;
+        _sqliteContext = sqliteContext;
+        
     }
 
     public IRepository<Product> CreateRepository(DatabaseType databaseType)
     {
-        if (databaseType == DatabaseType.MongoDB)
+        switch (databaseType)
         {
-        
-            return new MongoDbRepository(_mongoDbContext);
+            case DatabaseType.MongoDB:
+                return new MongoDbRepository(_mongoContext);
+            case DatabaseType.SQLite:
+                return new SqliteRepository(_sqliteContext);
+            case DatabaseType.SQL:
+                return new SqlRepository(_sqlContext);
+            default:
+                throw new ArgumentException("Unsupported database type");
         }
-        if (databaseType == DatabaseType.SQL)
-        {
-            return new SqlRepository(_sqlDbcontext); // Using the injected SqliteDbcontext
-        }
-        if (databaseType == DatabaseType.SQLite)
-        {
-            return new SqliteRepository(_sqliteDbcontext); // Using the injected SqliteDbcontext
-        }
-        throw new InvalidOperationException("Unsupported database type");
     }
 }

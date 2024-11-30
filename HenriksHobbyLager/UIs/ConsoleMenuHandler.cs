@@ -5,6 +5,7 @@ using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Facade;
 using System.IO;
+using HenriksHobbyLager.Repository;
 using System.Globalization;
 using MongoDB.Driver;
 

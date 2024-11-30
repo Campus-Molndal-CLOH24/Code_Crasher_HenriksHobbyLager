@@ -14,8 +14,10 @@ public class MongoDbRepository : IRepository<Product>
     
     public MongoDbRepository(MongoDbContext mongoDbContext)
     {
-        _productsCollections = mongoDbContext.Products;
+        if (mongoDbContext.Products == null)
+            throw new ArgumentException("Products collection is null");
         
+        _productsCollections = mongoDbContext.Products;
     }
 
     public IEnumerable<Product> GetAll()

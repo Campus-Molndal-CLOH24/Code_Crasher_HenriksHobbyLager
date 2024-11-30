@@ -4,6 +4,8 @@ using HenriksHobbyLager.Facade;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Database;
+using Microsoft.Extensions.Configuration;
+using HenriksHobbyLager.Repository;
 using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace HenriksHobbyLager
@@ -13,8 +15,11 @@ namespace HenriksHobbyLager
         static void Main(string[] args)
         {
             // Create MongoDB context
-            var mongoDbContext = new MongoDbContext();
-
+            var mongoDbContext = new MongoDbContext(
+                  // connection string
+                "ProductsHobbyLager"          // database name
+            );
+            
             // Create SQL context
             var options = new DbContextOptionsBuilder<SqlDbcontext>()
                 .UseSqlServer("Server=localhost\\SQLEXPRESS,1433;Database=ProductsHobbyLager;Integrated Security=True;TrustServerCertificate=True")
