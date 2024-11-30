@@ -16,31 +16,28 @@ public enum DatabaseType
 
 public class DatabaseFactory
 {
-    private readonly IConfiguration _configuration;
+    private readonly MongoDbContext _mongoDbContext;
+    
+    private readonly SqliteDbcontext _sqliteDbcontext;
 
-    public DatabaseFactory(IConfiguration configuration)
+    public DatabaseFactory(SqliteDbcontext sqliteDbcontext, MongoDbContext mongoDbContext)
     {
-        _configuration = configuration;
+        _mongoDbContext = mongoDbContext;
+        
+        _sqliteDbcontext = sqliteDbcontext;
     }
 
     public IRepository<Product> CreateRepository(DatabaseType databaseType)
     {
         if (databaseType == DatabaseType.MongoDB)
         {
-            var mongoClient = new MongoClient(_configuration.GetConnectionString("MongoConnection"));
-            var mongoDatabase = mongoClient.GetDatabase(_configuration.GetConnectionString("MongoDatabase"));
-            return new MongoDbRepository(mongoDatabase);
+        
+            return new MongoDbRepository(_mongoDbContext);
         }
         if (databaseType == DatabaseType.SQLite)
         {
-            var sqlContext = new SqliteDbcontext(
-                new DbContextOptionsBuilder<SqliteDbcontext>()
-                    .UseSqlite(_configuration.GetConnectionString("SqliteConnection"))
-                    .Options);
-            return new SqlRepository(sqlContext);
+            return new SqlRepository(_sqliteDbcontext); // Using the injected SqliteDbcontext
         }
-        throw new ArgumentException("Unsupported database type");
+        throw new InvalidOperationException("Unsupported database type");
     }
 }
-
-

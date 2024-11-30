@@ -2,6 +2,7 @@ using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using HenriksHobbyLager.Database;
 
 
 namespace HenriksHobbyLager.Repository;
@@ -10,9 +11,11 @@ public class MongoDbRepository : IRepository<Product>
 {
     private readonly IMongoCollection<Product> _productsCollections;
     
-    public MongoDbRepository(IMongoDatabase database)
+    
+    public MongoDbRepository(MongoDbContext mongoDbContext)
     {
-        _productsCollections = database.GetCollection<Product>("Products");
+        _productsCollections = mongoDbContext.Products;
+        
     }
 
     public IEnumerable<Product> GetAll()

@@ -7,8 +7,7 @@ using HenriksHobbyLager.Facade;
 using System.IO;
 using System.Globalization;
 using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
+
 
 namespace HenriksHobbyLager.UIs;
 class ConsoleMenuHandler
@@ -18,7 +17,7 @@ class ConsoleMenuHandler
     
     
     
-    public ConsoleMenuHandler(IConfiguration configuration, IProductFacade facade, DatabaseFactory databaseFactory)
+    public ConsoleMenuHandler(IProductFacade facade, DatabaseFactory databaseFactory)
     {
         // Initialize the repository based on selected database
         var _databaseMenu = new DatabaseMenu(databaseFactory);
@@ -117,7 +116,7 @@ class ConsoleMenuHandler
                     };
 
                     _repository.Add(product);
-                   // _repository.SaveChanges();
+                    
                     Console.WriteLine("Produkt tillagd!");
                 }
                 else

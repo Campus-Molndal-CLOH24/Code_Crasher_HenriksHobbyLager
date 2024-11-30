@@ -1,20 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Data.Sqlite;
-using HenriksHobbyLager.Database;
-using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
-using HenriksHobbyLager.UIs;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using HenriksHobbyLager.Facade;
-using HenriksHobbyLager.Repository;
-using HenriksHobbyLager.Interfaces;
 
+using HenriksHobbyLager.UIs;
+using HenriksHobbyLager.Facade;
+using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
+using HenriksHobbyLager.Database;
 
 namespace HenriksHobbyLager
 {
@@ -22,27 +11,30 @@ namespace HenriksHobbyLager
     {
         static void Main(string[] args)
         {
-            // Load configuration
-        var _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+            // Create MongoDB context
+            var mongoDbContext = new MongoDbContext();
 
-        // Create the DatabaseFactory using the configuration
-        var databaseFactory = new DatabaseFactory(_configuration);
+            // Create SQLite context
+            var options = new DbContextOptionsBuilder<SqliteDbcontext>()
+                .UseSqlite("Data Source=ProductsHobbyLager.db")
+                .Options;
+            var sqliteContext = new SqliteDbcontext(options);
 
-        // Get repository through DatabaseMenu
-        var databaseMenu = new DatabaseMenu(databaseFactory);
-        var repository = databaseMenu.GetSelectedRepository();
+            // Create the DatabaseFactory with all required dependencies
+            var databaseFactory = new DatabaseFactory(mongoDbContext, sqliteContext);
 
-        // Create facade with repository
-        var productFacade = new ProductFacade(repository);
+            // Get repository through DatabaseMenu
+            var databaseMenu = new DatabaseMenu(databaseFactory);
+            var repository = databaseMenu.GetSelectedRepository();
 
-        // Instantiate ConsoleMenuHandler with dependencies
-        var menuHandler = new ConsoleMenuHandler(_configuration, productFacade, databaseFactory);
+            // Create facade with repository
+            var productFacade = new ProductFacade(repository);
 
-        // Show the main menu
-        menuHandler.ShowMainMenu();
+            // Instantiate ConsoleMenuHandler with dependencies
+            var menuHandler = new ConsoleMenuHandler(configuration,productFacade, databaseFactory);
+
+            // Show the main menu
+            menuHandler.ShowMainMenu();
         }
     }
 }
