@@ -66,10 +66,11 @@ class ConsoleMenuHandler
                     Console.WriteLine("Ogiltigt val! Är du säker på att du tryckte på rätt knapp?");
                     break;
             }
+            WaitForUserInput();
 
         }
     }
-    private void WaitForUserInput()
+    private static void WaitForUserInput()
     {
         Console.WriteLine("\nTryck på valfri tangent för att fortsätta... (helst inte ESC)");
         Console.ReadKey();

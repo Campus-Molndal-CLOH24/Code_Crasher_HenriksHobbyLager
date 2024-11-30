@@ -28,9 +28,9 @@ public class DatabaseMenu
             switch (choice)
             {
                 case "1":
-                    return DatabaseType.MongoDB;
-                case "2":
                     return DatabaseType.SQLite;
+                case "2":
+                    return DatabaseType.MongoDB;
                 default:
                     Console.WriteLine("\nInvalid choice. Press any key to try again.");
                     Console.ReadKey();

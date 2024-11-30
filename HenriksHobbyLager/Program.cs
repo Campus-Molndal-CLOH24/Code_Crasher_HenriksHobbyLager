@@ -21,7 +21,7 @@ namespace HenriksHobbyLager
             var sqliteContext = new SqliteDbcontext(options);
 
             // Create the DatabaseFactory with all required dependencies
-            var databaseFactory = new DatabaseFactory(mongoDbContext, sqliteContext);
+            var databaseFactory = new DatabaseFactory(sqliteContext, mongoDbContext);
 
             // Get repository through DatabaseMenu
             var databaseMenu = new DatabaseMenu(databaseFactory);
@@ -31,7 +31,7 @@ namespace HenriksHobbyLager
             var productFacade = new ProductFacade(repository);
 
             // Instantiate ConsoleMenuHandler with dependencies
-            var menuHandler = new ConsoleMenuHandler(configuration,productFacade, databaseFactory);
+            var menuHandler = new ConsoleMenuHandler(productFacade, databaseFactory);
 
             // Show the main menu
             menuHandler.ShowMainMenu();

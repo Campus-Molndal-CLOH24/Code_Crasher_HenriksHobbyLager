@@ -11,7 +11,9 @@ namespace HenriksHobbyLager.Database
         public MongoDbContext()
         {
             // Connect to MongoDB (running locally)
-            var client = new MongoClient("mongodb://localhost:27017");
+            var connectionString = "mongodb://admin:admin2024@localhost:27017";
+            var client = new MongoClient(connectionString);
+
             
             // Get or create database
             var database = client.GetDatabase("HenriksHobbyLager");
