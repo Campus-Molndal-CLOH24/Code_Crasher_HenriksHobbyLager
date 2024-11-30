@@ -11,7 +11,7 @@ namespace HenriksHobbyLager.Database
         public MongoDbContext()
         {
             // Connect to MongoDB (running locally)
-            var connectionString = "mongodb://admin:admin2024@localhost:27017";
+            var connectionString = "mongodb+srv://yotaka:Johansson99*@cluster0.mongodb.net/HenriksHobbyLager";
             var client = new MongoClient(connectionString);
 
             

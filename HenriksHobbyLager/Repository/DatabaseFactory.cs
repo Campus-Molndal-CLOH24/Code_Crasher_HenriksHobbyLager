@@ -11,20 +11,20 @@ namespace HenriksHobbyLager;
 public enum DatabaseType
 {
     MongoDB = 1,
-    SQLite = 2
+    SQL = 2
 }
 
 public class DatabaseFactory
 {
     private readonly MongoDbContext _mongoDbContext;
     
-    private readonly SqliteDbcontext _sqliteDbcontext;
+    private readonly SqlDbcontext _sqlDbcontext;
 
-    public DatabaseFactory(SqliteDbcontext sqliteDbcontext, MongoDbContext mongoDbContext)
+    public DatabaseFactory(SqlDbcontext sqlDbcontext, MongoDbContext mongoDbContext)
     {
         _mongoDbContext = mongoDbContext;
         
-        _sqliteDbcontext = sqliteDbcontext;
+        _sqlDbcontext = sqlDbcontext;
     }
 
     public IRepository<Product> CreateRepository(DatabaseType databaseType)
@@ -34,9 +34,9 @@ public class DatabaseFactory
         
             return new MongoDbRepository(_mongoDbContext);
         }
-        if (databaseType == DatabaseType.SQLite)
+        if (databaseType == DatabaseType.SQL)
         {
-            return new SqlRepository(_sqliteDbcontext); // Using the injected SqliteDbcontext
+            return new SqlRepository(_sqlDbcontext); // Using the injected SqliteDbcontext
         }
         throw new InvalidOperationException("Unsupported database type");
     }

@@ -6,8 +6,8 @@ namespace HenriksHobbyLager.Repository
 {
     public class SqlRepository : IRepository<Product>
     {
-        private readonly SqliteDbcontext _context;
-        public SqlRepository(SqliteDbcontext context)
+        private readonly SqlDbcontext _context;
+        public SqlRepository(SqlDbcontext context)
         {
             _context = context;
         }

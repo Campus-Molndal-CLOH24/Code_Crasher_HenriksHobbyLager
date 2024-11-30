@@ -15,13 +15,13 @@ namespace HenriksHobbyLager
             var mongoDbContext = new MongoDbContext();
 
             // Create SQLite context
-            var options = new DbContextOptionsBuilder<SqliteDbcontext>()
+            var options = new DbContextOptionsBuilder<SqlDbcontext>()
                 .UseSqlite("Data Source=ProductsHobbyLager.db")
                 .Options;
-            var sqliteContext = new SqliteDbcontext(options);
+            var sqlContext = new SqlDbcontext(options);
 
             // Create the DatabaseFactory with all required dependencies
-            var databaseFactory = new DatabaseFactory(sqliteContext, mongoDbContext);
+            var databaseFactory = new DatabaseFactory(sqlContext, mongoDbContext);
 
             // Get repository through DatabaseMenu
             var databaseMenu = new DatabaseMenu(databaseFactory);
