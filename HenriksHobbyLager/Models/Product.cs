@@ -16,7 +16,9 @@ public class Product
     public DateTime? Created { get; set; }
     public DateTime? LastUpdated { get; set; }  // it means the property can hold a null value.
 
-
+    //this is a concurrency token
+    [ConcurrencyCheck]
+    public byte[]? RowVersion { get; set; }
 }
 
 

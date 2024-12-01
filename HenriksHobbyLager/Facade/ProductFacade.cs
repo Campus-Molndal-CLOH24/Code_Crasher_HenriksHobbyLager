@@ -11,14 +11,14 @@ public class ProductFacade : IProductFacade
         _productRepository = productRepository;
     }
 
-        public IEnumerable<Product> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return _productRepository.GetAll();
+            return await _productRepository.GetAllAsync(); //delegate to repository
         }
 
-        public Product GetProduct(int id)
+        public async Task<Product> GetProductAsync(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 throw new ArgumentException("Product not found");
@@ -26,32 +26,32 @@ public class ProductFacade : IProductFacade
             return product;
         }
 
-        public void CreateProduct(Product product)
+        public async Task CreateProductAsync(Product product)
         {
             if (product == null)
             {
                 throw new ArgumentNullException(nameof(product));
             }
-            _productRepository.Add(product);
+            await _productRepository.AddAsync(product);
         }
 
-        public void UpdateProduct(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
             if (product == null)
             {
                 throw new ArgumentNullException(nameof(product));
             }
-            _productRepository.Update(product);
+            await _productRepository.UpdateAsync(product);
         }
 
-        public void DeleteProduct(int id)
+        public async Task DeleteProductAsync(int id)
         {
-            _productRepository.Delete(id);
+            await _productRepository.DeleteAsync(id);
         }
-
-        public IEnumerable<Product> SearchProducts(string searchTerm)
+// seach iteam by name(i created it to inteact with user)
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
-            return _productRepository.Search(p => p.Name != null && p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            return await _productRepository.SearchAsync(p => p.Name != null && p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
     
 

@@ -36,6 +36,9 @@ namespace HenriksHobbyLager.Database
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.Name)
                 .IsUnique();  // creating an index on the Name property
+            modelBuilder.Entity<Product>() // this is a concurrency token
+                .Property(p => p.RowVersion)
+                .IsRowVersion();
         }
     }
     // DesignTimeDbContextFactory for migrations , it shows on error when i ran ef migrations add that i need to add thses class for 

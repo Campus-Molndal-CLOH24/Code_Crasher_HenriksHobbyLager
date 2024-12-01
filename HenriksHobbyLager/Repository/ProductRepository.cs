@@ -11,14 +11,15 @@ namespace HenriksHobbyLager.Repositories
 {
     public class ProductRepository : IRepository<Product>
     {
-        // Database context for managing database connections and operations
+        // // DbContext for interacting with the database
         private readonly DbContext _context;
-        // DbSet for managing the entities of type T
+        // DbSet for managing Product entities
         private readonly DbSet<Product> _dbSet;
 
 
         // Constructor for the Repository class
         // Constructor accepts the DbContext (injected via dependency injection)
+        //Set for the Product entity
         public ProductRepository(DbContext context)
         {
             _context = context;
@@ -27,6 +28,7 @@ namespace HenriksHobbyLager.Repositories
         }
 
         // Get all entities from the database
+        // Query products from the database using EF
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -43,18 +45,18 @@ namespace HenriksHobbyLager.Repositories
         }
 
         // Add an entity to the database
-        public async Task AddAsync(Product entity)
+        public async Task AddAsync(Product product)
         {
-            _dbSet.Add(entity); //synconous version
+            _dbSet.Add(product); //synconous version
             await _context.SaveChangesAsync();
         }
         // Update an entity in the database
         //use concurrency here too
-        public async Task UpdateAsync(Product entity)
+        public async Task UpdateAsync(Product product)
         {
             try
             {
-                _dbSet.Update(entity);
+                _dbSet.Update(product);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
@@ -74,8 +76,8 @@ namespace HenriksHobbyLager.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await GetByIdAsync(id);
-            _dbSet.Remove(entity);
+            var product = await GetByIdAsync(id);
+            _dbSet.Remove(product);
             await _context.SaveChangesAsync();
         }
         // Search for entities based on a predicate
