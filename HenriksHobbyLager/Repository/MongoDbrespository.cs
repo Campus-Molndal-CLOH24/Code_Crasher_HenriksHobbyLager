@@ -11,7 +11,7 @@ public class MongoDbRepository : IRepository<Product>
 {
     private readonly IMongoCollection<Product> _productsCollections;
     
-    
+    //constructor
     public MongoDbRepository(MongoDbContext mongoDbContext)
     {
         if (mongoDbContext.Products == null)
@@ -20,31 +20,31 @@ public class MongoDbRepository : IRepository<Product>
         _productsCollections = mongoDbContext.Products;
     }
 
-    public IEnumerable<Product> GetAll()
+    public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return _productsCollections.Find(_ => true).ToList();
+        return await _productsCollections.Find(_ => true).ToListAsync();
     }
 
-    public Product GetById(int id)
+    public async Task<Product> GetByIdAsync(int id)
     {
-        return _productsCollections.Find(p => p.Id == id).FirstOrDefault();
+        return await _productsCollections.Find(p => p.Id == id).FirstOrDefaultAsync();
     }
 
-    public void Add(Product entity)
+    public async Task AddAsync(Product entity)
     {
-        _productsCollections.InsertOne(entity);
+        await _productsCollections.InsertOneAsync(entity);
     }
-    public void Update(Product entity)
+    public async Task UpdateAsync(Product entity)
     {
-        _productsCollections.ReplaceOne(p => p.Id == entity.Id, entity);
+        await _productsCollections.ReplaceOneAsync(p => p.Id == entity.Id, entity);
     }
-    public void Delete(int id)
+    public async Task DeleteAsync(int id)
     {
-        _productsCollections.DeleteOne(p => p.Id == id);
+        await _productsCollections.DeleteOneAsync(p => p.Id == id);
     }
-    public IEnumerable<Product> Search(Func<Product, bool> predicate)
+    public async Task<IEnumerable<Product>> SearchAsync(Func<Product, bool> predicate)
     {
-        return _productsCollections.AsQueryable().Where(predicate).ToList(); //convert the MongoDB collection to an IQueryable
+        return await _productsCollections.Find(x => predicate(x)).ToListAsync();
     }
 
 }

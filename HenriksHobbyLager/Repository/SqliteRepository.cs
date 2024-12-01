@@ -1,6 +1,7 @@
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Database;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace HenriksHobbyLager.Repository
@@ -12,14 +13,14 @@ namespace HenriksHobbyLager.Repository
         {
             _sqliteDbcontext = sqliteDbcontext;
         }
-        public IEnumerable<Product> GetAll()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return _sqliteDbcontext.Product.ToList();
+            return await _sqliteDbcontext.Product.ToListAsync();
         }
 
-        public Product GetById(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            var product = _sqliteDbcontext.Product.Find(id);
+            var product = await _sqliteDbcontext.Product.FindAsync(id);
             if (product == null)
             {
                 throw new KeyNotFoundException($"Product with ID {id} was not found");
@@ -27,26 +28,38 @@ namespace HenriksHobbyLager.Repository
             return product;
         }
 
-        public void Add(Product entity)
+        public async Task AddAsync(Product entity)
         {
             _sqliteDbcontext.Product.Add(entity);
-            _sqliteDbcontext.SaveChanges();
+            await _sqliteDbcontext.SaveChangesAsync();
         }   
-        public void Update(Product entity)
+        //try catch to handle concurrency issues
+        //use permisstic concurrency to handle when multiple users are updating the same product
+        public async Task UpdateAsync(Product entity)
         {
-            _sqliteDbcontext.Product.Update(entity);
-            _sqliteDbcontext.SaveChanges();
+            try
+            {
+                _sqliteDbcontext.Product.Update(entity);
+                await _sqliteDbcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new InvalidOperationException("Someone else has modified this product. Please refresh and try again.", ex);
+            }
         }
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var product = _sqliteDbcontext.Product.Find(id);
+            var product = await _sqliteDbcontext.Product.FindAsync(id);
             if (product != null)
                 _sqliteDbcontext.Product.Remove(product);
-            _sqliteDbcontext.SaveChanges();
+            await _sqliteDbcontext.SaveChangesAsync();
         }
-        public IEnumerable<Product> Search(Func<Product, bool> predicate)
+        public async Task<IEnumerable<Product>> SearchAsync(Func<Product, bool> predicate)
         {
-            return _sqliteDbcontext.Product.Where(predicate).ToList();
+            return await _sqliteDbcontext.Product
+                .Include(p => p.Category) // using eager loading to load the related Category data
+                .Where(x => predicate(x))
+                .ToListAsync();
         }
     }
 }

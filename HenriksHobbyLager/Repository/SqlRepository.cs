@@ -1,6 +1,7 @@
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Database;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace HenriksHobbyLager.Repository
@@ -12,14 +13,14 @@ namespace HenriksHobbyLager.Repository
         {
             _context = context;
         }
-        public IEnumerable<Product> GetAll()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return _context.Product.ToList();
+            return await _context.Product.ToListAsync();
         }
 
-        public Product GetById(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            var product = _context.Product.Find(id);
+            var product = await _context.Product.FindAsync(id);
             if (product == null)
             {
                 throw new KeyNotFoundException($"Product with ID {id} was not found");
@@ -27,26 +28,40 @@ namespace HenriksHobbyLager.Repository
             return product;
         }
 
-        public void Add(Product entity)
+        public async Task AddAsync(Product entity)
         {
             _context.Product.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }   
-        public void Update(Product entity)
+        //try catch to handle concurrency issues
+        //use permisstic concurrency to handle when multiple users are updating the same product
+        // this concurrency is more detail about checked in the data what happen and tell user too
+        //the simple one tell user just refresh and try again.
+        //but this one tell user what happen and give more detail.
+        public async Task UpdateAsync(Product entity)
         {
-            _context.Product.Update(entity);
-            _context.SaveChanges();
+            try
+            {
+                _context.Product.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new InvalidOperationException("Someone else has modified this product. Please refresh and try again.", ex);
+            }
         }
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var product = _context.Product.Find(id);
+            var product = await _context.Product.FindAsync(id);
             if (product != null)
                 _context.Product.Remove(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public IEnumerable<Product> Search(Func<Product, bool> predicate)
+        public async Task<IEnumerable<Product>> SearchAsync(Func<Product, bool> predicate)
         {
-            return _context.Product.Where(predicate).ToList();
+            return await _context.Product
+                .Where(x => predicate(x))
+                .ToListAsync();
         }
     }
 }
