@@ -13,5 +13,8 @@
 
 .vs/ProjectEvaluation/
 
+# Ignore appsettings.json that contains sensitive data
+appsettings.json
+
 
 
