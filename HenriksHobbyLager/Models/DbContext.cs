@@ -7,7 +7,7 @@ using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace HenriksHobbyLager.Models
-{
+{  
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
