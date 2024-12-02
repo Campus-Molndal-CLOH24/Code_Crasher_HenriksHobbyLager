@@ -23,16 +23,26 @@ namespace HenriksHobbyLager.Repository
         return _entities;
     }
 
-    public T GetById(int id)
-    {
-        var property = typeof(T).GetProperty("Id");
-        if (property == null)
-            throw new InvalidOperationException("T måste ha en Id-egenskap.");
+        public T? GetById(int id)
+        {
+            var property = typeof(T).GetProperty("Id");
 
-        return _entities.FirstOrDefault(e => (int)property.GetValue(e) == id);
-    }
+            if (property == null)
+                throw new InvalidOperationException("T måste ha en Id-egenskap.");
 
-    public void Add(T entity)
+            foreach (var entity in _entities)
+            {
+                var value = property.GetValue(entity);
+                if (value is int intValue && intValue == id)
+                {
+                    return entity;
+                }
+            }
+
+            return null;
+        }
+
+        public void Add(T entity)
     {
         var property = typeof(T).GetProperty("Id");
         if (property == null)

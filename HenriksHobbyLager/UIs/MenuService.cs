@@ -6,7 +6,7 @@ using HenriksHobbyLager.Repository;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ui;
+namespace HenriksHobbyLager;
 public class ProductService
 {
     private readonly IProductRepository _repository;

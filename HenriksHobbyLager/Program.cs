@@ -10,7 +10,7 @@ using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ui;
+namespace HenriksHobbyLager;
 
 class Program
 {

@@ -47,10 +47,10 @@ namespace HenriksHobbyLager.Facade
             _repository.Delete(id);
         }
 
-        public IEnumerable<Product> SearchProducts(string searchTerm)
+        public IEnumerable<Product> SearchProducts(string searchTerm, Product p)
         {
             return _repository.GetAll()
-                .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                .Where(predicate: p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
