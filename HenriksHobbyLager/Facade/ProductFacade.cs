@@ -3,9 +3,6 @@
 public class ProductFacade : IProductFacade
 {
     private readonly IProductRepository _productRepository;
-    void GetAllProducts()
-    {
-        return _productRepository.GetAllProducts();
         public IEnumerable<Product> GetAllProducts()
         {
             return _productRepository.GetAll();
