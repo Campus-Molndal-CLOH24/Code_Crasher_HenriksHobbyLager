@@ -1,5 +1,7 @@
 ﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Service;
+using HenriksHobbyLager;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +9,7 @@ namespace HenriksHobbyLager.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly List<Product> _products = new();
+        private readonly List<Product> _products = [];
 
         public IEnumerable<Product> GetAll()
         {
@@ -44,23 +46,18 @@ namespace HenriksHobbyLager.Repository
             }
         }
 
-        public IEnumerable<Product> GetProductsByCategory(Category category)
+        public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
-            ArgumentNullException.ThrowIfNull(category);
-
-            // Antar att p.Category är en string och category.Name används för jämförelse
-            return _products.Where(p => p.Category == category.Name);
+            return _products.Where(p => p.CategoryId == categoryId).ToList();
         }
+
 
 
         public IEnumerable<Product> Search(string searchText, bool predicate)
         {
-            return _products.Where(p => p.Name.Contains(searchText));
+            return _products.Where(predicate: p => p.Name.Contains(searchText));
         }
 
-        public IEnumerable<Product> GetProductsByCategory(int categoryId)
-        {
-            throw new NotImplementedException();
-        }
+ 
     }
 }

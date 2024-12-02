@@ -15,6 +15,8 @@ public class Product
     public DateTime Created { get; set; }
     public DateTime? LastUpdated { get; set; }  // it means the property can hold a null value. 
     public int CategoryId { get; internal set; }
+
+
 }
 
 

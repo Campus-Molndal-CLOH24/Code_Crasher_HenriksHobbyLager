@@ -1,6 +1,8 @@
 ﻿using HenriksHobbyLager.Models;
 using System.Collections.Generic;
 using HenriksHobbyLager.Service;
+using HenriksHobbyLager.Repository;
+
 namespace HenriksHobbyLager.Interfaces
 {
     public interface IProductRepository

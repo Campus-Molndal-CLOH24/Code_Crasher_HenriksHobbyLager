@@ -8,14 +8,9 @@ using MongoDB.Driver;
 
 namespace HenriksHobbyLager.Repository
 {
-    public class MongoDBRepository : IProductRepository
+    public class MongoDBRepository(MongoDbContext context) : IProductRepository
     {
-        private readonly IMongoCollection<Product> _products;
-
-        public MongoDBRepository(MongoDbContext context)
-        {
-            _products = context.Products ?? throw new ArgumentNullException(nameof(context));
-        }
+        private readonly IMongoCollection<Product> _products = context.Products ?? throw new ArgumentNullException(nameof(context));
 
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
@@ -26,7 +21,9 @@ namespace HenriksHobbyLager.Repository
         public IEnumerable<Product> GetAll()
         {
             // Logik för att hämta alla produkter från MongoDB
-            return new List<Product>();
+            List<Product> value = [];
+            List<Product> products = value;
+            return products;
         }
 
         public Product? GetById(int id)
@@ -53,7 +50,7 @@ namespace HenriksHobbyLager.Repository
         public IEnumerable<Product> Search(string searchText, bool predicate)
         {
             // Logik för att söka efter produkter i MongoDB
-            return new List<Product>();
+            return [];
         }
     }
 }

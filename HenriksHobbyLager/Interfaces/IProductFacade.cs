@@ -1,8 +1,4 @@
-using System;
 using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Database;
-using HenriksHobbyLager.Repository;
-using HenriksHobbyLager;
 
 
 namespace HenriksHobbyLager.Interfaces

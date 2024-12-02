@@ -7,29 +7,24 @@ using HenriksHobbyLager.Database;
 
 namespace HenriksHobbyLager.Repository
 {
-    public class SQLiteRepository : IProductRepository
+    public class SQLiteRepository(SqliteDbContext context) : IProductRepository
     {
-        private readonly SqliteDbContext _context;
-
-        public SQLiteRepository(SqliteDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        private readonly SqliteDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
         // Hämta alla produkter
         public IEnumerable<Product> GetAll()
         {
-            return _context.Products.ToList();
+            return [.. _context.Products];
         }
 
         // Hämta en produkt baserat på ID
-        public Product GetById(int id)
+        public Product? GetById(int id)
         {
             return _context.Products.FirstOrDefault(p => p.Id == id);
         }
 
         // Lägg till en ny produkt
-        public void Add(Product product)
+        public void Create(Product product)
         {
             _context.Products.Add(product);
             _context.SaveChanges();
@@ -60,13 +55,12 @@ namespace HenriksHobbyLager.Repository
         // Hämta produkter baserat på kategori
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
-            return _context.Products.Where(p => p.CategoryId == categoryId).ToList();
+            return [.. _context.Products.Where(p => p.CategoryId == categoryId)];
         }
-
-        // Sök efter produkter med specifika kriterier
-        public IEnumerable<Product> Search(Func<Product, bool> predicate)
+  
+        public IEnumerable<Product> Search(string searchText, bool predicate)
         {
-            return _context.Products.Where(predicate).ToList();
+            throw new NotImplementedException();
         }
     }
 }

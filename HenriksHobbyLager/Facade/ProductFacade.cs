@@ -1,12 +1,14 @@
 ﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 using System.Collections.Generic;
+using HenriksHobbyLager.Service;
 
 namespace HenriksHobbyLager.Facade
 {
     public class ProductFacade(IProductRepository repository) : IProductFacade
     {
         private readonly IProductRepository _repository = repository;
+
 
         public IEnumerable<Product> GetAllProducts()
         {

@@ -12,6 +12,7 @@ namespace HenriksHobbyLager.Service
         private readonly object _productFacade = productFacade ?? throw new ArgumentNullException(nameof(productFacade));
         private readonly ProductFacade productFacade;
         private readonly IProductFacade _productfacade;
+      
 
         public void DisplayAllProducts()
         {
@@ -132,17 +133,24 @@ namespace HenriksHobbyLager.Service
 
         public void SearchByCategory(int categoryId)
         {
-            var products = _productFacade.GetProductsByCategory(categoryId);
-            if (!products.Any())
+            try
             {
-                Console.WriteLine("No products found in this category.");
-                return;
-            }
+                var products = _repository.GetProductsByCategory(categoryId);
+                if (products == null || !products.Any())
+                {
+                    Console.WriteLine("Inga produkter hittades i denna kategori.");
+                    return;
+                }
 
-            Console.WriteLine("Products in selected category:");
-            foreach (var product in products)
+                Console.WriteLine("Produkter i vald kategori:");
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price:C}, Lager: {product.Stock}");
+                }
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price:C}, Stock: {product.Stock}");
+                Console.WriteLine($"Ett fel uppstod: {ex.Message}");
             }
         }
 
