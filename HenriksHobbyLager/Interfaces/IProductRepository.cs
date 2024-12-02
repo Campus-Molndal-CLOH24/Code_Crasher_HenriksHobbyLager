@@ -11,5 +11,7 @@ namespace HenriksHobbyLager.Interfaces
         void Update(Product product); // Uppdatera en produkt
         void Delete(int id);          // Ta bort en produkt via ID
         IEnumerable<Product> GetProductsByCategory(int categoryId); // Hämta produkter baserat på kategori
+
+        IEnumerable<Product> Search(Func<Product, bool> predicate);
     }
 }

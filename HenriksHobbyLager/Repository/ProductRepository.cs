@@ -2,8 +2,7 @@
 using HenriksHobbyLager.Models;
 using System.Collections.Generic;
 using System.Linq;
-using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Interfaces;
+
 
 namespace HenriksHobbyLager.Repository
 {

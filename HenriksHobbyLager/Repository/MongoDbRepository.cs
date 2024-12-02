@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HenriksHobbyLager.Facade;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Interfaces;
 using MongoDB.Driver;
@@ -43,5 +44,10 @@ public class MongoDBRepository : IProductRepository
     public IEnumerable<Product> GetProductsByCategory(int categoryId)
     {
         return _context.Products.Find(p => p.CategoryId == categoryId).ToList();
+    }
+    
+    public IEnumerable<Product> Search(Func<Product, bool> predicate)
+    {
+        return _products.AsQueryable().Where(predicate).ToList();
     }
 }

@@ -3,6 +3,10 @@ using System.Linq;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Database;
+using Microsoft.EntityFrameworkCore;
+
+namespace HenriksHobbyLager.Repository;
+
 
 public class SQLiteRepository : IProductRepository
 {
@@ -48,5 +52,10 @@ public class SQLiteRepository : IProductRepository
     public IEnumerable<Product> GetProductsByCategory(int categoryId)
     {
         return _context.Products.Where(p => p.CategoryId == categoryId).ToList();
+    }
+
+    public IEnumerable<Product> Search(Func<Product, bool> predicate)
+    {
+        return _context.Products.Where(predicate).ToList();
     }
 }
