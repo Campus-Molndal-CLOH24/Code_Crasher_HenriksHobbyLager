@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using HenriksHobbyLager;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Repository;

@@ -4,15 +4,17 @@ using HenriksHobbyLager.Database;
 using HenriksHobbyLager.Repository;
 using HenriksHobbyLager;
 
-    namespace HenriksHobbyLager.Interfaces
+
+namespace HenriksHobbyLager.Interfaces
+{
+    public interface IProductFacade
     {
-        public interface IProductFacade
-        {
-            IEnumerable<Product> GetAllProducts();
-            Product GetProductById(int id);
-            void CreateProduct(Product product);
-            void UpdateProduct(Product product);
-            void DeleteProduct(int id);
-            IEnumerable<Product> SearchProducts(Func<Product, bool> predicate);
-        }
+        IEnumerable<Product> GetAllProducts();
+        Product? GetProductById(int id);
+        void CreateProduct(Product product);
+        void UpdateProduct(Product product);
+        void DeleteProduct(int id);
+        IEnumerable<Product> SearchProducts(string searchText, bool predicate);
+        IEnumerable<Product> GetProductsByCategory(int categoryId);
     }
+}

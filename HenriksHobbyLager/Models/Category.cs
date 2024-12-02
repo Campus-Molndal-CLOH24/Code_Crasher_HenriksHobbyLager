@@ -13,6 +13,6 @@ namespace HenriksHobbyLager.Models
     public class Category
     {
         public int Id { get; set; } // Primärnyckel
-        public string Name { get; set; } // Namn på kategorin
+        public string? Name { get; set; } // Namn på kategorin
     }
 }

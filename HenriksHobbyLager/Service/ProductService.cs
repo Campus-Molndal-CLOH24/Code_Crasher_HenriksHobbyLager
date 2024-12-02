@@ -1,96 +1,155 @@
-﻿using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Interfaces; // Import för IProductFacade
+﻿using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Facade;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using HenriksHobbyLager.Database;
+using HenriksHobbyLager.Repository;
 
-namespace HenriksHobbyLager.Services
+namespace HenriksHobbyLager.Service
 {
-    public class ProductService
+    public class ProductService(IProductFacade productFacade)
     {
-        private readonly IProductFacade _productFacade;
+        private readonly IProductRepository _repository;
+        private readonly object _productFacade = productFacade ?? throw new ArgumentNullException(nameof(productFacade));
+        private readonly ProductFacade productFacade;
+        private readonly IProductFacade _productfacade;
 
-        // Konstruktorn injicerar IProductFacade istället för ProductRepository
-        public ProductService(IProductFacade productFacade)
-        {
-            _productFacade = productFacade;
-        }
-
-        // Hämta alla produkter
         public void DisplayAllProducts()
         {
-            var products = _productFacade.GetAllProducts();
+            Console.WriteLine("\nAlla produkter:");
+            var products = _repository.GetAll();
+
             if (!products.Any())
             {
-                Console.WriteLine("No products found.");
+                Console.WriteLine("Inga produkter hittades.");
                 return;
             }
 
+            foreach (var product in products)
+            {
+                Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price}, Lager: {product.Stock}");
+            }
+        }
+
+        public void AddProduct()
+        {
+            Console.Write("\nAnge produktnamn: ");
+            var name = Console.ReadLine();
+
+            Console.Write("Ange kategori-ID: ");
+            if (!int.TryParse(Console.ReadLine(), out var categoryId))
+            {
+                Console.WriteLine("Ogiltigt kategori-ID!");
+                return;
+            }
+
+            Console.Write("Ange pris: ");
+            if (!decimal.TryParse(Console.ReadLine(), out var price))
+            {
+                Console.WriteLine("Ogiltigt pris!");
+                return;
+            }
+
+            Console.Write("Ange lagerantal: ");
+            if (!int.TryParse(Console.ReadLine(), out var stock))
+            {
+                Console.WriteLine("Ogiltigt lagerantal!");
+                return;
+            }
+
+            var product = new Product
+            {
+                Name = name ?? "Okänd",
+                CategoryId = categoryId,
+                Price = price,
+                Stock = stock
+            };
+
+            _repository.Create(product);
+            Console.WriteLine($"Produkten '{name}' har lagts till.");
+        }
+
+        public void UpdateProduct()
+        {
+            Console.Write("\nAnge ID för produkten du vill uppdatera: ");
+            if (!int.TryParse(Console.ReadLine(), out var id))
+            {
+                Console.WriteLine("Ogiltigt ID!");
+                return;
+            }
+
+            var existingProduct = _repository.GetById(id);
+            if (existingProduct == null)
+            {
+                Console.WriteLine($"Ingen produkt hittades med ID {id}.");
+                return;
+            }
+
+            Console.Write("Ange nytt namn (lämna tomt för att behålla nuvarande): ");
+            var name = Console.ReadLine();
+            Console.Write("Ange ny kategori (lämna tomt för att behålla nuvarande): ");
+            var category = Console.ReadLine();
+
+            Console.Write("Ange nytt pris (lämna tomt för att behålla nuvarande): ");
+            var priceInput = Console.ReadLine();
+            var price = string.IsNullOrEmpty(priceInput) ? existingProduct.Price : decimal.Parse(priceInput);
+
+            Console.Write("Ange nytt lagerantal (lämna tomt för att behålla nuvarande): ");
+            var stockInput = Console.ReadLine();
+            var stock = string.IsNullOrEmpty(stockInput) ? existingProduct.Stock : int.Parse(stockInput);
+
+            var updatedProduct = new Product
+            {
+                Id = id,
+                Name = string.IsNullOrEmpty(name) ? existingProduct.Name : name,
+                CategoryId = string.IsNullOrEmpty(category) ? existingProduct.CategoryId : int.Parse(category),
+                Price = price,
+                Stock = stock
+            };
+
+            _repository.Update(updatedProduct);
+            Console.WriteLine($"Produkten med ID {id} har uppdaterats.");
+        }
+
+        public void DeleteProduct()
+        {
+            Console.Write("\nAnge ID för produkten du vill ta bort: ");
+            if (!int.TryParse(Console.ReadLine(), out var id))
+            {
+                Console.WriteLine("Ogiltigt ID!");
+                return;
+            }
+
+            var product = _repository.GetById(id);
+            if (product == null)
+            {
+                Console.WriteLine($"Ingen produkt hittades med ID {id}.");
+                return;
+            }
+
+            _repository.Delete(id);
+            Console.WriteLine($"Produkten med ID {id} har tagits bort.");
+        }
+
+        public void SearchByCategory(int categoryId)
+        {
+            var products = _productFacade.GetProductsByCategory(categoryId);
+            if (!products.Any())
+            {
+                Console.WriteLine("No products found in this category.");
+                return;
+            }
+
+            Console.WriteLine("Products in selected category:");
             foreach (var product in products)
             {
                 Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price:C}, Stock: {product.Stock}");
             }
         }
 
-        // Lägg till en ny produkt
-        public void AddProduct(Product product)
+
+        internal void SearchByCategory()
         {
-            if (product == null)
-            {
-                Console.WriteLine("Product cannot be null.");
-                return;
-            }
-
-            _productFacade.CreateProduct(product);
-            Console.WriteLine($"Product '{product.Name}' added successfully.");
-        }
-
-        // Uppdatera en befintlig produkt
-        public void UpdateProduct(Product updatedProduct)
-        {
-            var existingProduct = _productFacade.GetProductById(updatedProduct.Id);
-            if (existingProduct == null)
-            {
-                Console.WriteLine($"Product with ID {updatedProduct.Id} not found.");
-                return;
-            }
-
-            _productFacade.UpdateProduct(updatedProduct);
-            Console.WriteLine($"Product '{updatedProduct.Name}' updated successfully.");
-        }
-
-        // Ta bort en produkt
-        public void DeleteProduct(int id)
-        {
-            // Först hämta produkten via ID för att säkerställa att den existerar
-            var product = _productFacade.GetProductById(id);
-            if (product == null)
-            {
-                Console.WriteLine($"Product with ID {id} not found.");
-                return;
-            }
-
-            // Anropa Delete-metoden med ID:t
-            _productFacade.DeleteProduct(id);
-            Console.WriteLine($"Product with ID {id} deleted successfully.");
-        }
-
-        // Sök efter produkter med hjälp av en predikatfunktion
-        public void SearchProducts(Func<Product, bool> predicate)
-        {
-            var products = _productFacade.SearchByCategory(categoryId);
-            if (!products.Any())
-            {
-                Console.WriteLine("No products matched your search.");
-                return;
-            }
-
-            Console.WriteLine("Search results:");
-            foreach (var product in results)
-            {
-                Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price:C}");
-            }
+            throw new NotImplementedException();
         }
     }
 }
