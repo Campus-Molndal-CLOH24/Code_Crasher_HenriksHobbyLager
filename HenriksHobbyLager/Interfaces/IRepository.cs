@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Repository;
+using HenriksHobbyLager.Facade;
 
 namespace HenriksHobbyLager.Interfaces
+
 {
     public interface IRepository<T>
     {

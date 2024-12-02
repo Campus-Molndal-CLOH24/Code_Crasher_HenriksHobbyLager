@@ -1,50 +1,56 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Database;
+using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
-public class ProductFacade : IProductFacade
+namespace HenriksHobbyLager.Facade
 {
-    private readonly IProductRepository _productRepository;
-        public IEnumerable<Product> GetAllProducts()
+    public class ProductFacade
+    {
+        private readonly IProductRepository _repository;
+
+        public ProductFacade(IProductRepository repository)
         {
-            return _productRepository.GetAll();
+            _repository = repository;
         }
 
-        public Product GetProduct(int id)
+        public IEnumerable<Product> GetAllProducts()
         {
-            var product = _productRepository.GetById(id);
-            if (product == null)
-            {
-                throw new ArgumentException("Product not found");
-            }
-            return product;
+            return _repository.GetAll();
+        }
+
+        public Product? GetProductById(int id)
+        {
+            return _repository.GetById(id);
         }
 
         public void CreateProduct(Product product)
         {
             if (product == null)
-            {
                 throw new ArgumentNullException(nameof(product));
-            }
-            _productRepository.Add(product);
+
+            _repository.Add(product);
         }
 
         public void UpdateProduct(Product product)
         {
             if (product == null)
-            {
                 throw new ArgumentNullException(nameof(product));
-            }
-            _productRepository.Update(product);
+
+            _repository.Update(product);
         }
 
         public void DeleteProduct(int id)
         {
-            _productRepository.Delete(id);
+            _repository.Delete(id);
         }
 
         public IEnumerable<Product> SearchProducts(string searchTerm)
         {
-            return _productRepository.Search(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            return _repository.GetAll()
+                .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
     }
-
 }

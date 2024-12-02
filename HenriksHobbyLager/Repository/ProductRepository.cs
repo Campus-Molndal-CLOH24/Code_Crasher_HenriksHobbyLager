@@ -1,71 +1,60 @@
-﻿using System;
+﻿using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
 using System.Collections.Generic;
 using System.Linq;
+using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Interfaces;
 
-namespace RefactoringExercise.Repositories
+namespace HenriksHobbyLager.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class ProductRepository : IProductRepository
     {
-        private readonly List<T> _entities;
-        private int _nextId;
+        private readonly List<Product> _products = new();
 
-        public Repository()
+        public IEnumerable<Product> GetAll()
         {
-            _entities = new List<T>();
-            _nextId = 1;
+            return _products;
         }
 
-        public IEnumerable<T> GetAll()
+        public Product GetById(int id)
         {
-            return _entities;
+            return _products.FirstOrDefault(p => p.Id == id);
         }
 
-        public T GetById(int id)
+        public void Add(Product entity)
         {
-            var property = typeof(T).GetProperty("Id");
-            if (property == null)
-                throw new InvalidOperationException("T måste ha en Id-egenskap.");
-
-            return _entities.FirstOrDefault(e => (int)property.GetValue(e) == id);
+            _products.Add(entity);
         }
 
-        public void Add(T entity)
+        public void Update(Product entity)
         {
-            var property = typeof(T).GetProperty("Id");
-            if (property == null)
-                throw new InvalidOperationException("T måste ha en Id-egenskap.");
-
-            property.SetValue(entity, _nextId++);
-            _entities.Add(entity);
-        }
-
-        public void Update(T entity)
-        {
-            var property = typeof(T).GetProperty("Id");
-            if (property == null)
-                throw new InvalidOperationException("T måste ha en Id-egenskap.");
-
-            int id = (int)property.GetValue(entity);
-            var existingEntity = GetById(id);
-            if (existingEntity != null)
+            var product = GetById(entity.Id);
+            if (product != null)
             {
-                var index = _entities.IndexOf(existingEntity);
-                _entities[index] = entity;
+                product.Name = entity.Name;
+                product.Price = entity.Price;
+                product.Stock = entity.Stock;
+                product.Category = entity.Category;
+                product.LastUpdated = entity.LastUpdated;
             }
         }
 
         public void Delete(int id)
         {
-            var entity = GetById(id);
-            if (entity != null)
+            var product = GetById(id);
+            if (product != null)
             {
-                _entities.Remove(entity);
+                _products.Remove(product);
             }
         }
 
-        public IEnumerable<T> Search(Func<T, bool> predicate)
+        public IEnumerable<Product> Search(Func<Product, bool> predicate)
         {
-            return _entities.Where(predicate);
+            return _products.Where(predicate);
+        }
+        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        {
+            return _products.Where(p => p.CategoryId == categoryId);
         }
     }
 }
