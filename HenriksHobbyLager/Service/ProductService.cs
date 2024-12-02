@@ -6,13 +6,16 @@ using HenriksHobbyLager.Repository;
 
 namespace HenriksHobbyLager.Service
 {
-    public class ProductService(IProductFacade productFacade)
+    public class ProductService
     {
+        private readonly IProductFacade _productFacade;
         private readonly IProductRepository _repository;
-        private readonly object _productFacade = productFacade ?? throw new ArgumentNullException(nameof(productFacade));
-        private readonly ProductFacade productFacade;
-        private readonly IProductFacade _productfacade;
-      
+
+        public ProductService(IProductFacade productFacade, IProductRepository repository)
+        {
+            _productFacade = productFacade ?? throw new ArgumentNullException(nameof(productFacade));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
 
         public void DisplayAllProducts()
         {
@@ -155,10 +158,7 @@ namespace HenriksHobbyLager.Service
         }
 
 
-        internal void SearchByCategory()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
 

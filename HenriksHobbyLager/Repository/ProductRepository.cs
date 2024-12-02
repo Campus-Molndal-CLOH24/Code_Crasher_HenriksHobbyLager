@@ -9,7 +9,7 @@ namespace HenriksHobbyLager.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly List<Product> _products = [];
+        private readonly List<Product> _products = new();
 
         public IEnumerable<Product> GetAll()
         {

@@ -24,10 +24,15 @@ class Program
             repository = new MongoDBRepository(mongoContext);
         }
 
-        var productFacade = new ProductFacade(repository);
-        var productService = new ProductService(productFacade);
+        // Skapa en instans av ProductFacade med repository
+        IProductFacade productFacade = new ProductFacade(repository);
 
-        // Starta menyn eller sök efter produkter efter kategori
-        productService.SearchByCategory(1); // Exempelanrop, du kan byta till din menyhantering
+        // Skapa en instans av ProductService med både productFacade och repository
+        ProductService productService = new ProductService(productFacade, repository);
+
+        // Skapa en instans av MenuService och starta menyn
+        MenuService menuService = new MenuService(productService);
+        menuService.DisplayMenu();  // Startar menyn
     }
+
 }

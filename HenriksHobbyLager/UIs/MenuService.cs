@@ -45,7 +45,15 @@ namespace HenriksHobbyLager.Service
                         _productService.DeleteProduct();
                         break;
                     case "5":
-                        _productService.SearchByCategory();
+                        Console.Write("\nAnge kategori-ID för att söka efter produkter: ");
+                        if (int.TryParse(Console.ReadLine(), out int categoryId))
+                        {
+                            _productService.SearchByCategory(categoryId);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ogiltigt kategori-ID!");
+                        }
                         break;
                     case "6":
                         Console.WriteLine("Avslutar programmet...");
@@ -59,5 +67,6 @@ namespace HenriksHobbyLager.Service
                 Console.ReadKey();
             }
         }
+
     }
 }
