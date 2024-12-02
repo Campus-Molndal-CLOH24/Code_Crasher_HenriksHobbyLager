@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HenriksHobbyLager.Facade
 {
-    public class ProductFacade
+    public class ProductFacade : IProductFacade
     {
         private readonly IProductRepository _repository;
 

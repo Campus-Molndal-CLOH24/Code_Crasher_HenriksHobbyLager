@@ -1,5 +1,6 @@
 ﻿using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Repository;
+using HenriksHobbyLager.Interfaces; // Import för IProductFacade
+using HenriksHobbyLager.Facade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +9,18 @@ namespace HenriksHobbyLager.Services
 {
     public class ProductService
     {
-        private readonly ProductRepository _repository;
+        private readonly IProductFacade _productFacade;
 
-        public ProductService(ProductRepository repository)
+        // Konstruktorn injicerar IProductFacade istället för ProductRepository
+        public ProductService(IProductFacade productFacade)
         {
-            _repository = repository;
+            _productFacade = productFacade;
         }
 
-        // Get all products
+        // Hämta alla produkter
         public void DisplayAllProducts()
         {
-            var products = _repository.GetAll();
+            var products = _productFacade.GetAllProducts();
             if (!products.Any())
             {
                 Console.WriteLine("No products found.");
@@ -31,7 +33,7 @@ namespace HenriksHobbyLager.Services
             }
         }
 
-        // Add a new product
+        // Lägg till en ny produkt
         public void AddProduct(Product product)
         {
             if (product == null)
@@ -40,44 +42,44 @@ namespace HenriksHobbyLager.Services
                 return;
             }
 
-            _repository.Add(product);
+            _productFacade.CreateProduct(product);
             Console.WriteLine($"Product '{product.Name}' added successfully.");
         }
 
-        // Update an existing product
+        // Uppdatera en befintlig produkt
         public void UpdateProduct(Product updatedProduct)
         {
-            var existingProduct = _repository.GetById(updatedProduct.Id);
+            var existingProduct = _productFacade.GetProductById(updatedProduct.Id);
             if (existingProduct == null)
             {
                 Console.WriteLine($"Product with ID {updatedProduct.Id} not found.");
                 return;
             }
 
-            _repository.Update(updatedProduct);
+            _productFacade.UpdateProduct(updatedProduct);
             Console.WriteLine($"Product '{updatedProduct.Name}' updated successfully.");
         }
 
+        // Ta bort en produkt
         public void DeleteProduct(int id)
         {
-            // First, retrieve the product by ID to ensure it exists
-            var product = _repository.GetById(id);
+            // Först hämta produkten via ID för att säkerställa att den existerar
+            var product = _productFacade.GetProductById(id);
             if (product == null)
             {
                 Console.WriteLine($"Product with ID {id} not found.");
                 return;
             }
 
-            // Call the Delete method with the ID
-            _repository.Delete(id);
-
+            // Anropa Delete-metoden med ID:t
+            _productFacade.DeleteProduct(id);
             Console.WriteLine($"Product with ID {id} deleted successfully.");
         }
 
-        // Search for products using a predicate
+        // Sök efter produkter med hjälp av en predikatfunktion
         public void SearchProducts(Func<Product, bool> predicate)
         {
-            var results = _repository.Search(predicate);
+            var results = _productFacade.SearchProducts(predicate);
             if (!results.Any())
             {
                 Console.WriteLine("No products matched your search.");
@@ -92,3 +94,4 @@ namespace HenriksHobbyLager.Services
         }
     }
 }
+
