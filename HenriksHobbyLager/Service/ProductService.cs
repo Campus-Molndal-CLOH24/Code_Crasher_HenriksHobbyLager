@@ -79,8 +79,8 @@ namespace HenriksHobbyLager.Services
         // Sök efter produkter med hjälp av en predikatfunktion
         public void SearchProducts(Func<Product, bool> predicate)
         {
-            var results = _productFacade.SearchProducts(predicate);
-            if (!results.Any())
+            var products = _productFacade.SearchByCategory(categoryId);
+            if (!products.Any())
             {
                 Console.WriteLine("No products matched your search.");
                 return;
