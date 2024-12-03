@@ -1,20 +1,14 @@
-﻿using System.Collections.Generic;
-using HenriksHobbyLager.Interfaces;
+﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Database;
-using MongoDB.Driver;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using HenriksHobbyLager.Service;
 
 namespace HenriksHobbyLager.Facade
 {
-    public class ProductFacade : IProductFacade
+    public class ProductFacade(IProductRepository repository) : IProductFacade
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductRepository _repository = repository;
 
-        public ProductFacade(IProductRepository repository)
-        {
-            _repository = repository;
-        }
 
         public IEnumerable<Product> GetAllProducts()
         {
@@ -28,17 +22,11 @@ namespace HenriksHobbyLager.Facade
 
         public void CreateProduct(Product product)
         {
-            if (product == null)
-                throw new ArgumentNullException(nameof(product));
-
-            _repository.Add(product);
+            _repository.Create(product);
         }
 
         public void UpdateProduct(Product product)
         {
-            if (product == null)
-                throw new ArgumentNullException(nameof(product));
-
             _repository.Update(product);
         }
 
@@ -47,11 +35,13 @@ namespace HenriksHobbyLager.Facade
             _repository.Delete(id);
         }
 
-        public IEnumerable<Product> SearchProducts(Func<Product, bool> predicate)
+        public IEnumerable<Product> SearchProducts(string searchText, bool predicate)
         {
-
-            return _repository.Search(predicate);
+            return _repository.Search(searchText, predicate);
         }
-       
+        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        {
+            return _repository.GetProductsByCategory(categoryId);
+        }
     }
 }

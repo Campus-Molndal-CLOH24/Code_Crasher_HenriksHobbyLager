@@ -1,97 +1,164 @@
-﻿using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Interfaces; // Import för IProductFacade
+﻿using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Facade;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using HenriksHobbyLager.Database;
+using HenriksHobbyLager.Repository;
 
-namespace HenriksHobbyLager.Services
+namespace HenriksHobbyLager.Service
 {
     public class ProductService
     {
         private readonly IProductFacade _productFacade;
+        private readonly IProductRepository _repository;
 
-        // Konstruktorn injicerar IProductFacade istället för ProductRepository
-        public ProductService(IProductFacade productFacade)
+        public ProductService(IProductFacade productFacade, IProductRepository repository)
         {
-            _productFacade = productFacade;
+            _productFacade = productFacade ?? throw new ArgumentNullException(nameof(productFacade));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        // Hämta alla produkter
         public void DisplayAllProducts()
         {
-            var products = _productFacade.GetAllProducts();
+            Console.WriteLine("\nAlla produkter:");
+            var products = _repository.GetAll();
+
             if (!products.Any())
             {
-                Console.WriteLine("No products found.");
+                Console.WriteLine("Inga produkter hittades.");
                 return;
             }
 
             foreach (var product in products)
             {
-                Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price:C}, Stock: {product.Stock}");
+                Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price}, Lager: {product.Stock}");
             }
         }
 
-        // Lägg till en ny produkt
-        public void AddProduct(Product product)
+        public void AddProduct()
         {
-            if (product == null)
+            Console.Write("\nAnge produktnamn: ");
+            var name = Console.ReadLine();
+
+            Console.Write("Ange kategori-ID: ");
+            if (!int.TryParse(Console.ReadLine(), out var categoryId))
             {
-                Console.WriteLine("Product cannot be null.");
+                Console.WriteLine("Ogiltigt kategori-ID!");
                 return;
             }
 
-            _productFacade.CreateProduct(product);
-            Console.WriteLine($"Product '{product.Name}' added successfully.");
+            Console.Write("Ange pris: ");
+            if (!decimal.TryParse(Console.ReadLine(), out var price))
+            {
+                Console.WriteLine("Ogiltigt pris!");
+                return;
+            }
+
+            Console.Write("Ange lagerantal: ");
+            if (!int.TryParse(Console.ReadLine(), out var stock))
+            {
+                Console.WriteLine("Ogiltigt lagerantal!");
+                return;
+            }
+
+            var product = new Product
+            {
+                Name = name ?? "Okänd",
+                CategoryId = categoryId,
+                Price = price,
+                Stock = stock
+            };
+
+            _repository.Create(product);
+            Console.WriteLine($"Produkten '{name}' har lagts till.");
         }
 
-        // Uppdatera en befintlig produkt
-        public void UpdateProduct(Product updatedProduct)
+        public void UpdateProduct()
         {
-            var existingProduct = _productFacade.GetProductById(updatedProduct.Id);
+            Console.Write("\nAnge ID för produkten du vill uppdatera: ");
+            if (!int.TryParse(Console.ReadLine(), out var id))
+            {
+                Console.WriteLine("Ogiltigt ID!");
+                return;
+            }
+
+            var existingProduct = _repository.GetById(id);
             if (existingProduct == null)
             {
-                Console.WriteLine($"Product with ID {updatedProduct.Id} not found.");
+                Console.WriteLine($"Ingen produkt hittades med ID {id}.");
                 return;
             }
 
-            _productFacade.UpdateProduct(updatedProduct);
-            Console.WriteLine($"Product '{updatedProduct.Name}' updated successfully.");
+            Console.Write("Ange nytt namn (lämna tomt för att behålla nuvarande): ");
+            var name = Console.ReadLine();
+            Console.Write("Ange ny kategori (lämna tomt för att behålla nuvarande): ");
+            var category = Console.ReadLine();
+
+            Console.Write("Ange nytt pris (lämna tomt för att behålla nuvarande): ");
+            var priceInput = Console.ReadLine();
+            var price = string.IsNullOrEmpty(priceInput) ? existingProduct.Price : decimal.Parse(priceInput);
+
+            Console.Write("Ange nytt lagerantal (lämna tomt för att behålla nuvarande): ");
+            var stockInput = Console.ReadLine();
+            var stock = string.IsNullOrEmpty(stockInput) ? existingProduct.Stock : int.Parse(stockInput);
+
+            var updatedProduct = new Product
+            {
+                Id = id,
+                Name = string.IsNullOrEmpty(name) ? existingProduct.Name : name,
+                CategoryId = string.IsNullOrEmpty(category) ? existingProduct.CategoryId : int.Parse(category),
+                Price = price,
+                Stock = stock
+            };
+
+            _repository.Update(updatedProduct);
+            Console.WriteLine($"Produkten med ID {id} har uppdaterats.");
         }
 
-        // Ta bort en produkt
-        public void DeleteProduct(int id)
+        public void DeleteProduct()
         {
-            // Först hämta produkten via ID för att säkerställa att den existerar
-            var product = _productFacade.GetProductById(id);
+            Console.Write("\nAnge ID för produkten du vill ta bort: ");
+            if (!int.TryParse(Console.ReadLine(), out var id))
+            {
+                Console.WriteLine("Ogiltigt ID!");
+                return;
+            }
+
+            var product = _repository.GetById(id);
             if (product == null)
             {
-                Console.WriteLine($"Product with ID {id} not found.");
+                Console.WriteLine($"Ingen produkt hittades med ID {id}.");
                 return;
             }
 
-            // Anropa Delete-metoden med ID:t
-            _productFacade.DeleteProduct(id);
-            Console.WriteLine($"Product with ID {id} deleted successfully.");
+            _repository.Delete(id);
+            Console.WriteLine($"Produkten med ID {id} har tagits bort.");
         }
 
-        // Sök efter produkter med hjälp av en predikatfunktion
-        public void SearchProducts(Func<Product, bool> predicate)
+        public void SearchByCategory(int categoryId)
         {
-            var results = _productFacade.SearchProducts(predicate);
-            if (!results.Any())
+            try
             {
-                Console.WriteLine("No products matched your search.");
-                return;
-            }
+                var products = _repository.GetProductsByCategory(categoryId);
+                if (products == null || !products.Any())
+                {
+                    Console.WriteLine("Inga produkter hittades i denna kategori.");
+                    return;
+                }
 
-            Console.WriteLine("Search results:");
-            foreach (var product in results)
+                Console.WriteLine("Produkter i vald kategori:");
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price:C}, Lager: {product.Stock}");
+                }
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price:C}");
+                Console.WriteLine($"Ett fel uppstod: {ex.Message}");
             }
         }
+
+
+       
     }
 }
 

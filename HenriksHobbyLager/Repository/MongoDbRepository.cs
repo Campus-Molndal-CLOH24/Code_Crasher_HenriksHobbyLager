@@ -1,53 +1,56 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HenriksHobbyLager.Facade;
-using HenriksHobbyLager.Models;
+﻿using HenriksHobbyLager.Database;
 using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using HenriksHobbyLager.Service;
 using MongoDB.Driver;
-using HenriksHobbyLager.Database;
 
-namespace HenriksHobbyLager.Repository;
-public class MongoDBRepository : IProductRepository
+namespace HenriksHobbyLager.Repository
 {
-    private readonly MongoDbContext _context;
+    public class MongoDBRepository(MongoDbContext context) : IProductRepository
+    {
+        private readonly IMongoCollection<Product> _products = context.Products ?? throw new ArgumentNullException(nameof(context));
 
-    public MongoDBRepository(MongoDbContext context)
-    {
-        _context = context;
-    }
+        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        {
+            var filter = Builders<Product>.Filter.Eq(p => p.CategoryId, categoryId);
+            return _products.Find(filter).ToList();
+        }
 
-    public IEnumerable<Product> GetAll()
-    {
-        return _context.Products.Find(_ => true).ToList();
-    }
+        public IEnumerable<Product> GetAll()
+        {
+            // Logik för att hämta alla produkter från MongoDB
+            List<Product> value = [];
+            List<Product> products = value;
+            return products;
+        }
 
-    public Product? GetById(int id)
-    {
-        return _context.Products.Find(p => p.Id == id).FirstOrDefault();
-    }
+        public Product? GetById(int id)
+        {
+            // Logik för att hämta en produkt med ID från MongoDB
+            return null;
+        }
 
-    public void Add(Product product)
-    {
-        _context.Products.InsertOne(product);
-    }
+        public void Create(Product product)
+        {
+            // Logik för att skapa en ny produkt i MongoDB
+        }
 
-    public void Update(Product product)
-    {
-        _context.Products.ReplaceOne(p => p.Id == product.Id, product);
-    }
+        public void Update(Product product)
+        {
+            // Logik för att uppdatera en produkt i MongoDB
+        }
 
-    public void Delete(int id)
-    {
-        _context.Products.DeleteOne(p => p.Id == id);
-    }
+        public void Delete(int id)
+        {
+            // Logik för att ta bort en produkt i MongoDB
+        }
 
-    public IEnumerable<Product> GetProductsByCategory(int categoryId)
-    {
-        return _context.Products.Find(p => p.CategoryId == categoryId).ToList();
-    }
-    
-    public IEnumerable<Product> Search(Func<Product, bool> predicate)
-    {
-        return _products.AsQueryable().Where(predicate).ToList();
+        public IEnumerable<Product> Search(string searchText, bool predicate)
+        {
+            // Logik för att söka efter produkter i MongoDB
+            return [];
+        }
     }
 }

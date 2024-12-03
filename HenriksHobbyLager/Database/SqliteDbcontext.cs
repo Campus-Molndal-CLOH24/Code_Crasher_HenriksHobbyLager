@@ -1,4 +1,8 @@
 using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Facade;
+using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Repository;
+
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 

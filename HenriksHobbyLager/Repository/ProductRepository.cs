@@ -1,8 +1,9 @@
 ﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
+using HenriksHobbyLager.Service;
+using HenriksHobbyLager;
 using System.Collections.Generic;
 using System.Linq;
-
 
 namespace HenriksHobbyLager.Repository
 {
@@ -15,26 +16,24 @@ namespace HenriksHobbyLager.Repository
             return _products;
         }
 
-        public Product GetById(int id)
+        public Product? GetById(int id)
         {
             return _products.FirstOrDefault(p => p.Id == id);
         }
 
-        public void Add(Product entity)
+        public void Create(Product product)
         {
-            _products.Add(entity);
+            _products.Add(product);
         }
 
-        public void Update(Product entity)
+        public void Update(Product product)
         {
-            var product = GetById(entity.Id);
-            if (product != null)
+            var existingProduct = GetById(product.Id);
+            if (existingProduct != null)
             {
-                product.Name = entity.Name;
-                product.Price = entity.Price;
-                product.Stock = entity.Stock;
-                product.Category = entity.Category;
-                product.LastUpdated = entity.LastUpdated;
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.Stock = product.Stock;
             }
         }
 
@@ -47,13 +46,18 @@ namespace HenriksHobbyLager.Repository
             }
         }
 
-        public IEnumerable<Product> Search(Func<Product, bool> predicate)
-        {
-            return _products.Where(predicate);
-        }
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
-            return _products.Where(p => p.CategoryId == categoryId);
+            return _products.Where(p => p.CategoryId == categoryId).ToList();
         }
+
+
+
+        public IEnumerable<Product> Search(string searchText, bool predicate)
+        {
+            return _products.Where(predicate: p => p.Name.Contains(searchText));
+        }
+
+ 
     }
 }
