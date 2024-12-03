@@ -15,10 +15,4 @@ public class SqliteDbContext : DbContext
         modelBuilder.Entity<Product>()
             .HasKey(p => p.Id); // Definiera Id som primärnyckel
     }
-
-    public SqliteDbContext()
-    {
-        // Utför migrering när en ny instans av kontexten skapas
-        Database.Migrate();
-    }
 }

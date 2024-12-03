@@ -8,9 +8,14 @@ using MongoDB.Driver;
 
 namespace HenriksHobbyLager.Repository
 {
-    public class MongoDBRepository(IMongoCollection<Product> products) : IProductRepository
+    public class MongoDBRepository : IProductRepository
     {
-        private readonly IMongoCollection<Product> _products = products ?? throw new ArgumentNullException(nameof(products));
+        private readonly IMongoCollection<Product> _products;
+
+        public MongoDBRepository(IMongoCollection<Product> products)
+        {
+            _products = products ?? throw new ArgumentNullException(nameof(products));
+        }
 
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {

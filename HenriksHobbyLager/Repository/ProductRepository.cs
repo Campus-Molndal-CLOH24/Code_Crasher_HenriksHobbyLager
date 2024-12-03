@@ -55,7 +55,7 @@ namespace HenriksHobbyLager.Repository
 
         public IEnumerable<Product> Search(string searchText, bool predicate)
         {
-            return _products.Where(p => p.Name != null && p.Name.Contains(searchText));
+            return _products.Where(predicate: p => p.Name.Contains(searchText));
         }
 
  

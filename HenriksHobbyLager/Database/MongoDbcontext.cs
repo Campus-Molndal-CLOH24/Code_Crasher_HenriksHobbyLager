@@ -18,7 +18,7 @@ public class MongoDbContext
 
     public MongoDbContext()
     {
-        var client = new MongoClient("mongodb://localhost:27017"); // Anpassa anslutningssträngen
+        var client = new MongoClient("mongodb://localhost:27017/"); // Anpassa anslutningssträngen
         _database = client.GetDatabase("HenriksHobbyLager");
     }
 
