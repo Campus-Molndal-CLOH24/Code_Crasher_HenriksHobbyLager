@@ -1,17 +1,13 @@
-﻿using HenriksHobbyLager.Interfaces;
-using HenriksHobbyLager;
-using HenriksHobbyLager.Facade;
-using HenriksHobbyLager.Database;
-using HenriksHobbyLager.Repository;
-using HenriksHobbyLager.Models;
-
-
-
-namespace HenriksHobbyLager.Service
+﻿namespace HenriksHobbyLager.Service
 {
-    public class MenuService(ProductService productService)
+    public class MenuService
     {
-        private readonly ProductService _productService = productService;
+        private readonly ProductService _productService;
+
+        public MenuService(ProductService productService)
+        {
+            _productService = productService;
+        }
 
         public void DisplayMenu()
         {
@@ -67,6 +63,5 @@ namespace HenriksHobbyLager.Service
                 Console.ReadKey();
             }
         }
-
     }
 }
