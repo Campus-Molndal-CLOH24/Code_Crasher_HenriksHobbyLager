@@ -8,11 +8,13 @@ class Program
 {
     static void Main()
     {
+        // Frågar användaren vilken databas som ska användas, SQLite eller MongoDB.
         Console.WriteLine("Välj databas: 1 för SQLite, 2 för MongoDB");
         var choice = Console.ReadLine();
 
         IProductRepository repository;
 
+        // Om användaren väljer SQLite (val 1), skapa en SQLiteRepository.
         if (choice == "1")
         {
             var sqliteContext = new SqliteDbContext();
@@ -20,8 +22,9 @@ class Program
         }
         else
         {
+            // Annars, skapa en MongoDBRepository.
             var mongoContext = new MongoDbContext();
-            repository = new MongoDBRepository(mongoContext.Products); // Pass the IMongoCollection<Product> instead of MongoDbContext
+            repository = new MongoDBRepository(mongoContext.Products); // Skickar IMongoCollection<Product> istället för MongoDbContext
         }
 
         // Skapa en instans av ProductFacade med repository
@@ -35,3 +38,5 @@ class Program
         menuService.DisplayMenu();  // Startar menyn
     }
 }
+
+
