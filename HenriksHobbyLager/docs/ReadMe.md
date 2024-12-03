@@ -10,7 +10,6 @@ För att komma igång med HenriksHobbyLager, följ dessa steg:
    git clone <repo-url>
    ```
 2. Installera nödvändiga beroenden via NuGet:
-   - `MongoDB.Driver` för anslutning till MongoDB
    - `Microsoft.EntityFrameworkCore.Sqlite` för SQLite-databasen
 3. Öppna projektet i Visual Studio och kontrollera att alla nödvändiga paket är installerade via NuGet Package Manager.
 
@@ -24,10 +23,9 @@ För att köra programmet följ dessa steg:
 
 ## Konfigurationsinställningar
 - **SQLite Databas**: SQLite-databasen (åtkomlig via `HenriksHobbyLager.db`) används för lokal lagring av produktinformation. Databasanslutningen konfigureras i `SqliteDbContext` med sökvägen till den statiska databasfilen.
-- **MongoDB Databas**: MongoDB konfigureras för att arbeta med `MongoDbContext`. Du kan anpassa MongoDB-anslutningen genom att justera anslutningssträngen i `MongoDbContext` (default: `mongodb://localhost:27017`).
 
 ## Implementerade Patterns
-- **Repository Pattern**: För att hantera åtkomst till databasen och CRUD-operationer används `ProductRepository` för SQLite och `MongoDBRepository` för MongoDB. Dessa klasser fungerar som en abstraktion mellan databasen och den övriga affärslogiken.
+- **Repository Pattern**: För att hantera åtkomst till databasen och CRUD-operationer används `ProductRepository` för SQLite. Dessa klasser fungerar som en abstraktion mellan databasen och den övriga affärslogiken.
 - **Facade Pattern**: `ProductFacade` används för att kapsla in komplexiteten med att anropa olika repository-klasser och förenkla åtkomst till produktrelaterade operationer.
 
 ## Databasstruktur
@@ -37,10 +35,102 @@ För att köra programmet följ dessa steg:
   - `Price`: Pris på produkten (REAL)
   - `Stock`: Antal i lager (INT)
   - `CategoryId`: ID för tillhörande kategori (INT)
-- **MongoDB (Produktlagring)**: MongoDB används för att lägga till och hämta produkter från databasen `HenriksHobbyLager`, där produkterna lagras i en samling med namnet `Products`. Varje produkt får ett unikt `ObjectId`.
+
+## Projektstruktur och Refaktorisering
+Projektet är organiserat enligt principen om Single Responsibility Principle (SRP), vilket innebär att varje klass och komponent har ett tydligt och avgränsat ansvar. Nedan följer en beskrivning av hur koden är uppdelad i olika filer och dess fördelar:
+
+- **Database**: Denna mapp innehåller `SqliteDbContext` som ansvarar för att konfigurera och interagera med SQLite-databasen. Genom att ha en separat klass för databasanslutningen är det enkelt att byta ut eller uppdatera databasinställningar utan att påverka annan logik.
+
+- **Facade**: Innehåller `ProductFacade`, som agerar som en enkel ingångspunkt till produktrelaterade operationer. Detta underlättar för övriga klasser i applikationen genom att minska beroenden och göra det enkelt att återanvända kod.
+
+- **Interfaces**: Definierar de kontrakt som olika klasser implementerar, såsom `IProductRepository` och `IProductFacade`. Genom att använda interfaces är det lätt att byta ut implementationer och skapa enhetstester som inte är beroende av specifika klasser.
+
+- **Migrations**: Innehåller migrationsfiler för att hålla koll på ändringar i databasens struktur. Detta underlättar hanteringen av uppdateringar i databasens schema över tid.
+
+- **Models**: Innehåller domänmodeller som `Product`. Dessa modeller representerar de dataobjekt som lagras i databasen och används i applikationen. Att hålla modellerna separata gör dem återanvändbara och ökar kodens läsbarhet.
+
+- **Repository**: Innehåller klasser som `ProductRepository` och `SQLiteRepository` för databasåtkomst. Genom att hantera all databaslogik i repository-klasser separerar vi affärslogiken från dataåtkomsten, vilket förbättrar underhållbarheten.
+
+- **Service**: `ProductService` ansvarar för affärslogik relaterad till produkter. Detta är ett exempel på hur man kan samla verksamhetsregler och valideringar som inte bör ligga i repository-klasserna.
+
+- **UIs**: `MenuService` hanterar interaktionen med användaren via konsolmenyn. Genom att separera användargränssnittet från övriga delar av applikationen håller vi koden lättare att underhålla och uppdatera.
+
+- **Program.cs**: Detta är huvudstartpunkten för programmet. Här initialiseras alla komponenter och beroenden för att starta applikationen.
+
+### Fördelar med Projektstrukturen
+1. **Enkel Underhållbarhet**: Varje klass och komponent har ett tydligt ansvar. Detta förenklar felsökning och uppdateringar eftersom du vet var viss funktionalitet finns.
+2. **Bättre Återanvändbarhet**: Genom att bryta upp funktionaliteten i mindre, specialiserade klasser är det enklare att återanvända delar av koden utan att införa oönskade beroenden.
+3. **Förbättrad Testbarhet**: Genom att utnyttja interfaces och separera olika ansvarsområden är det enklare att skapa enhetstester för varje del av applikationen utan att testa för mycket på en gång.
+4. **Lättare Att Utvidga**: Med en tydlig struktur blir det enklare att lägga till nya funktioner. Vill du exempelvis lägga till en ny databas eller API kan du bara skapa ett nytt repository och konfigurera facaden att hantera det.
 
 ## Sammanfattning av Arbetet i Projektet
-I detta projekt har jag arbetat med att skapa en applikation för lagerhantering som använder två olika databaser – SQLite för lokal datalagring och MongoDB för molnbaserad datalagring. Projektet är uppdelat för att hantera dessa två typer av lagring separat via dedikerade `Repository`-klasser och kontexter. Båda databaserna hanteras via deras respektive repository-klasser som implementerar CRUD-operationer, och `ProductFacade` hjälper till att sammanföra alla operationer. Dessutom använder jag ett konsolgränssnitt för att få feedback på hur systemet fungerar i praktiken, och hur data synkroniseras mellan databaserna. Detta arbetssätt har gett mig en förståelse för integration av olika lagringsteknologier samt tillämpning av vanliga designmönster.
 
-Jag har stött på utmaningar som `DuplicateKey`-fel vid insättning i MongoDB, men jag har inte helt lyckats lösa detta problem utan att orsaka andra fel i systemet. Detta är ett område som fortfarande kräver mer arbete och anpassning för att hantera `ObjectId` på ett smidigare sätt. Slutligen har jag anpassat `Product`-klassen så att den fungerar korrekt både för MongoDB och SQLite, genom att skapa separata modeller för de två databaserna.
+### 1. **Teknisk Implementation**
+   - **SOLID-Principer**: Jag har implementerat flera SOLID-principer, framför allt **Single Responsibility Principle (SRP)** genom att dela upp ansvar mellan olika klasser som `ProductRepository`, `ProductService`, och `MenuService`. **Dependency Inversion Principle (DIP)** har också implementerats genom att använda interfaces som `IProductRepository` för att lossa beroenden mellan komponenter.
+   
+   - **Databasimplementation**: Projektet använder SQLite för lokal datalagring, vilket möjliggör enkel hantering av produkter utan beroende av en molndatabas. Databasen hanteras genom `SqliteDbContext` som tillhandahåller konfiguration och CRUD-operationer för produkterna.
 
+   - **Använda Patterns**: Jag har använt **Repository Pattern** för att separera dataåtkomstlogik från affärslogik, vilket gör koden mer underhållbar och testbar. **Facade Pattern** används för att ge en förenklad gränssnitt för produktrelaterade operationer, vilket underlättar för användaren och minskar komplexiteten i koden.
+
+   - **Tekniska Utmaningar**: En av de största tekniska utmaningarna var hanteringen av `DuplicateKey`-fel i MongoDB. För att lösa detta problem behövde jag se till att alla produkter fick unika `ObjectId`-värden vid insättning, men jag valde slutligen att fokusera på SQLite för att undvika ytterligare komplexitet.
+
+### 2. **Arbetsprocess**
+   - **Planering**: Projektet började med att definiera funktionerna för lagerhanteringen. Jag bröt ner funktionerna i mindre uppgifter och skapade en lista med tydliga mål, såsom att implementera CRUD-operationer och skapa ett konsolgränssnitt.
+
+   - **Val och Motivation**: Jag valde SQLite som databas eftersom det är lätt att sätta upp och passar för lokala utvecklingsmiljöer. MongoDB testades också, men efter problem med hantering av dubblettnycklar valde jag att gå vidare med enbart SQLite.
+
+   - **Lärdomar**: Under projektets gång lärde jag mig vikten av att ha tydligt avgränsade ansvarsområden i koden för att göra systemet underhållbart. Att använda repository- och facade-mönster hjälpte mig att strukturera systemet på ett sätt som är lätt att utöka och testa.
+
+   - **Vad jag skulle göra annorlunda**: Om jag skulle göra om projektet skulle jag från början fokusera mer på att bygga automatiserade enhetstester för att säkerställa kvalitet i varje steg av utvecklingen. Jag skulle även lägga mer tid på att konfigurera migrationshantering för databasen.
+
+### 3. **Kod-exempel**
+   - **Produktfacadens Användning**:
+     ```csharp
+     public class ProductFacade
+     {
+         private readonly IProductRepository _repository;
+
+         public ProductFacade(IProductRepository repository)
+         {
+             _repository = repository;
+         }
+
+         public IEnumerable<Product> GetAllProducts()
+         {
+             return _repository.GetAll();
+         }
+     }
+     ```
+     **Varför det är bra**: Detta kodexempel visar hur `Facade Pattern` används för att förenkla åtkomsten till produktoperationer. Det minskar komplexiteten och kopplar bort beroenden.
+
+   - **Repository Pattern**:
+     ```csharp
+     public void Create(Product product)
+     {
+         _context.Products.Add(product);
+         _context.SaveChanges();
+     }
+     ```
+     **Varför det är bra**: Denna metod är enkel och tydlig. Den isolerar databaslogiken och gör det möjligt att enkelt hantera ändringar i hur data lagras.
+
+   - **Användning av Interfaces**:
+     ```csharp
+     public class ProductService
+     {
+         private readonly IProductRepository _repository;
+
+         public ProductService(IProductRepository repository)
+         {
+             _repository = repository;
+         }
+
+         public void AddProduct(Product product)
+         {
+             _repository.Create(product);
+         }
+     }
+     ```
+     **Varför det är bra**: Att använda `IProductRepository` här gör koden flexibel. Det gör det lättare att byta ut repository-implementationen utan att påverka resten av applikationen.
+
+## Sammanfattning
+HenriksHobbyLager är ett projekt som exemplifierar god kodstruktur och designmönster för att hantera lagerhantering. Genom att använda patterns som repository och facade, samt principer som SRP, har jag kunnat skapa ett system som är lätt att underhålla, utöka och testa. Projektet har gett mig värdefull erfarenhet inom databasdesign, affärslogik och systemarkitektur.
