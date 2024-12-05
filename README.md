@@ -1,73 +1,72 @@
-```markdown
 # ✨ HenriksHobbyLager
 
-**HenriksHobbyLager** är ett C#-baserat hobbyprojekt som simulerar lagerhantering av hobbyprodukter. Med en kombination av **SQLite** och **MongoDB** som datalager, 
-och ett enkelt menygränssnitt i konsolen, visas hur SOLID-principer och designmönster kan skapa en tydlig, flexibel och testbar kodbas.
+**HenriksHobbyLager** är ett C#-baserat hobbyprojekt som demonstrerar hur man kan bygga en lagerhanteringsapplikation för hobbyprodukter. Projektet använder **SQLite** och **MongoDB** för datalagring, samt ett enkelt konsolbaserat menygränssnitt. Genom att följa **SOLID-principer** och använda välkända designmönster som **Repository** och **Facade** skapas en flexibel, testbar och lättunderhållen kodbas.
 
 ## 🌱 Funktioner
 
-- **CRUD-operationer:** Skapa, visa, uppdatera och ta bort produkter.
-- **Kategori-baserad sökning:** Hitta produkter utifrån kategori.
-- **Flera datalager:** Hantera produkter i både SQLite och MongoDB.
-- **Konsolbaserat gränssnitt:** Enkelt menyval för att interagera med lagret.
+- **CRUD-operationer:** Skapa, läs, uppdatera och ta bort produkter.
+- **Sökning per kategori:** Hitta produkter baserat på kategori.
+- **Flera datalager:** Hantera produkter både i SQLite och MongoDB.
+- **Konsolgränssnitt:** Enkel meny för interaktion med lagret.
 
-## 🚀 Komma igång
+## 🚀 Kom igång
 
 1. **Klona projektet:**
    ```bash
    git clone <repo-url>
    ```
+   
+2. **Installera beroenden:**  
+   Säkerställ att följande paket finns:
+   - Microsoft.EntityFrameworkCore.Sqlite
+   - MongoDB.Driver
+   
+3. **Öppna i IDE:**  
+   Öppna projektet i Visual Studio eller Visual Studio Code och kontrollera att alla beroenden är installerade.
 
-2. **Installera beroenden (exempel):**
-   - `Microsoft.EntityFrameworkCore.Sqlite`
-   - `MongoDB.Driver`
+4. **Bygg & kör:**  
+   När projektet körs (t.ex. F5 i Visual Studio) visas en meny där du kan utföra CRUD-operationer och sökningar på produkter.
 
-3. **Öppna i IDE:**
-   Öppna projektet i Visual Studio eller Visual Studio Code och kontrollera att alla paket är installerade.
-
-4. **Bygg och kör (F5):**
-   När applikationen startar visas en meny där du kan hantera produkter och söka utifrån kategori.
-
-## 💾 Databas & Strukturer
+## 💾 Databaser & Struktur
 
 - **SQLite:**  
-  En lokal filbaserad databas med tabellen `Products` (Id, Name, Price, Stock, CategoryId).
+  En lokal filbaserad databas med en `Products`-tabell (Id, Name, Price, Stock, CategoryId).
   
 - **MongoDB:**  
-  Lagrar produkterna som dokument med motsvarande egenskaper som i SQLite, men i ett dokumentorienterat format.
+  Produkterna lagras som dokument med motsvarande fält som i SQLite, men i ett dokumentorienterat format.
 
 ## 🗂 Projektstruktur
 
-```bash
+```
 HenriksHobbyLager/
 ├─ Database/
-│  ├─ SqliteDbContext.cs       # SQLite-konfiguration
-│  └─ MongoDbContext.cs        # MongoDB-konfiguration
+│  ├─ SqliteDbContext.cs
+│  └─ MongoDbContext.cs
 ├─ Facade/
-│  └─ ProductFacade.cs         # Fasad för förenklad åtkomst
+│  └─ ProductFacade.cs
 ├─ Interfaces/
-│  ├─ IProductRepository.cs    # Kontrakt för datalagring
-│  ├─ IProductFacade.cs        # Kontrakt för fasaden
-│  └─ IProductBase.cs          # Grundegenskaper för produkt
+│  ├─ IProductRepository.cs
+│  ├─ IProductFacade.cs
+│  └─ IProductBase.cs
 ├─ Models/
-│  ├─ ProductSQLite.cs         # Modell för SQLite-produkt
-│  └─ ProductMongo.cs          # Modell för MongoDB-produkt
+│  ├─ ProductSQLite.cs
+│  └─ ProductMongo.cs
 ├─ Repository/
-│  ├─ ProductRepository.cs     # Generisk datalagerlogik
-│  ├─ SQLiteRepository.cs      # Specifik för SQLite
-│  └─ MongoDBRepository.cs     # Specifik för MongoDB
+│  ├─ ProductRepository.cs
+│  ├─ SQLiteRepository.cs
+│  └─ MongoDBRepository.cs
 ├─ Service/
-│  └─ ProductService.cs        # Affärslogik
+│  └─ ProductService.cs
 ├─ UIs/
-│  └─ MenuService.cs           # Konsolmeny för användarinteraktion
-└─ Program.cs                  # Programstartpunkt
+│  └─ MenuService.cs
+└─ Program.cs
 ```
 
 ## 🧩 Designmönster & Principer
 
-- **Repository Pattern:** Isolerar dataåtkomst från affärslogik för bättre struktur och testbarhet.
-- **Facade Pattern:** Erbjuder en förenklad yta för komplexa operationer, vilket minskar beroenden i koden.
-- **SOLID-principer:** Särskilt Single Responsibility & Dependency Inversion, för att skapa modulär, robust och lättunderhållen kod.
+- **Repository Pattern:** Abstraherar dataåtkomst från affärslogik och förenklar testning och underhåll.
+- **Facade Pattern:** Ger en förenklad gränsyta till komplex funktionalitet, minskar beroenden och förbättrar kodstruktur.
+- **SOLID-principer:** Fokus på Single Responsibility och Dependency Inversion skapar modulär, robust och lättunderhållen kod.
 
 ## 💻 Kodexempel
 
@@ -101,14 +100,15 @@ public class ProductFacade : IProductFacade
 
 ## 🌟 Lärdomar & Framtid
 
-- **Underhållbarhet:** Tydlig ansvarsuppdelning gör det enkelt att ändra och förbättra koden över tid.
-- **Testbarhet:** Med interfaces och separata lager kan funktioner testas isolerat.
-- **Framtida förbättringar:** Mer avancerad validering, fler enhetstester och smartare migrationshantering för databaser.
+- **Underhållbarhet:** Kodens tydliga ansvarsfördelning underlättar framtida förbättringar.
+- **Testbarhet:** Tack vare interfaces och separata lager kan funktioner testas isolerat.
+- **Framtida förbättringar:** Mer avancerad validering, fler enhetstester och bättre migrationshantering för databaserna.
 
 ## 📜 Licens
 
-Detta projekt är tillgängligt under [MIT License](./LICENSE).
+Detta projekt är licensierat under [MIT License](./LICENSE).
 
 ---
 
-**Tack för att du besöker HenriksHobbyLager!** Om du har förslag, frågor eller vill bidra, tveka inte att skapa ett issue eller en pull request.
+**Tack för att du tittar på HenriksHobbyLager!**  
+Har du förslag, frågor eller vill bidra? Skapa gärna ett issue eller skicka in en pull request.
