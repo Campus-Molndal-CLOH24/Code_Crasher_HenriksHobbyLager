@@ -1,98 +1,92 @@
 ```markdown
-# HenriksHobbyLager
+# ✨ HenriksHobbyLager
 
-<span style="color:#00BFFF;">**HenriksHobbyLager**</span> är ett hobbyprojekt byggt i **C#** för att simulera lagerhantering av hobbyprodukter. Projektet använder en kombination av <span style="color:#FFA07A;">**SQLite**</span> och <span style="color:#FF8C00;">**MongoDB**</span> för datalagring, samt erbjuder ett menybaserat konsolgränssnitt för interaktion. Syftet är att visa upp tydlig arkitektur, SOLID-principer och designmönster för en enkel, underhållbar och skalbar kodbas.
+**HenriksHobbyLager** är ett C#-baserat hobbyprojekt som simulerar lagerhantering av hobbyprodukter. Med en kombination av **SQLite** och **MongoDB** som datalager, 
+och ett enkelt menygränssnitt i konsolen, visas hur SOLID-principer och designmönster kan skapa en tydlig, flexibel och testbar kodbas.
 
-## ✨ Funktioner
+## 🌱 Funktioner
 
-- <span style="color:#32CD32;">**CRUD-operationer**</span> (Skapa, Läs, Uppdatera, Ta bort produkter)
-- <span style="color:#FF69B4;">Sökning</span> efter produkter baserat på kategori
-- Val mellan två databaser: <span style="color:#FFA07A;">SQLite</span> och <span style="color:#FF8C00;">MongoDB</span>
-- Konsolbaserat, enkelt menygränssnitt
+- **CRUD-operationer:** Skapa, visa, uppdatera och ta bort produkter.
+- **Kategori-baserad sökning:** Hitta produkter utifrån kategori.
+- **Flera datalager:** Hantera produkter i både SQLite och MongoDB.
+- **Konsolbaserat gränssnitt:** Enkelt menyval för att interagera med lagret.
 
-## 🚀 Installation
+## 🚀 Komma igång
 
-1. Klona repo:t  
+1. **Klona projektet:**
    ```bash
-   git clone <https://github.com/Campus-Molndal-CLOH24/Code_Crasher_HenriksHobbyLager>
+   git clone <repo-url>
    ```
 
-2. Installera beroenden:  
+2. **Installera beroenden (exempel):**
    - `Microsoft.EntityFrameworkCore.Sqlite`
    - `MongoDB.Driver`
 
-3. Bygg och kör i Visual Studio (F5)
+3. **Öppna i IDE:**
+   Öppna projektet i Visual Studio eller Visual Studio Code och kontrollera att alla paket är installerade.
 
-## 🛠 Hur man kör programmet
+4. **Bygg och kör (F5):**
+   När applikationen startar visas en meny där du kan hantera produkter och söka utifrån kategori.
 
-Starta applikationen och följ menyerna för att visa, lägga till, uppdatera eller ta bort produkter. Du kan även söka baserat på kategori. Använd piltangenter och siffror för att navigera genom alternativen.
+## 💾 Databas & Strukturer
 
-## 📦 Databasstruktur
+- **SQLite:**  
+  En lokal filbaserad databas med tabellen `Products` (Id, Name, Price, Stock, CategoryId).
+  
+- **MongoDB:**  
+  Lagrar produkterna som dokument med motsvarande egenskaper som i SQLite, men i ett dokumentorienterat format.
 
-**SQLite (Products-tabell)**  
-- Id (INT, primärnyckel)  
-- Name (TEXT)  
-- Price (REAL)  
-- Stock (INT)  
-- CategoryId (INT)
-
-**MongoDB**  
-- Liknande fält som i SQLite, men lagras som dokument.
-
-## 📂 Projektstruktur
+## 🗂 Projektstruktur
 
 ```bash
 HenriksHobbyLager/
 ├─ Database/
-│  ├─ SqliteDbContext.cs
-│  └─ MongoDbContext.cs
+│  ├─ SqliteDbContext.cs       # SQLite-konfiguration
+│  └─ MongoDbContext.cs        # MongoDB-konfiguration
 ├─ Facade/
-│  └─ ProductFacade.cs
+│  └─ ProductFacade.cs         # Fasad för förenklad åtkomst
 ├─ Interfaces/
-│  ├─ IProductRepository.cs
-│  ├─ IProductFacade.cs
-│  └─ IProductBase.cs
+│  ├─ IProductRepository.cs    # Kontrakt för datalagring
+│  ├─ IProductFacade.cs        # Kontrakt för fasaden
+│  └─ IProductBase.cs          # Grundegenskaper för produkt
 ├─ Models/
-│  ├─ ProductSQLite.cs
-│  └─ ProductMongo.cs
+│  ├─ ProductSQLite.cs         # Modell för SQLite-produkt
+│  └─ ProductMongo.cs          # Modell för MongoDB-produkt
 ├─ Repository/
-│  ├─ ProductRepository.cs
-│  ├─ SQLiteRepository.cs
-│  └─ MongoDBRepository.cs
+│  ├─ ProductRepository.cs     # Generisk datalagerlogik
+│  ├─ SQLiteRepository.cs      # Specifik för SQLite
+│  └─ MongoDBRepository.cs     # Specifik för MongoDB
 ├─ Service/
-│  └─ ProductService.cs
+│  └─ ProductService.cs        # Affärslogik
 ├─ UIs/
-│  └─ MenuService.cs
-└─ Program.cs
+│  └─ MenuService.cs           # Konsolmeny för användarinteraktion
+└─ Program.cs                  # Programstartpunkt
 ```
 
-## 🎨 Designmönster & SOLID
+## 🧩 Designmönster & Principer
 
-- <span style="color:#00CED1;">**Repository Pattern**</span> för att separera dataåtkomstlogik.  
-- <span style="color:#DC143C;">**Facade Pattern**</span> för enklare åtkomst till produktoperationer.  
-- SOLID-principer (särskilt SRP & DIP) för bättre struktur och testbarhet.
+- **Repository Pattern:** Isolerar dataåtkomst från affärslogik för bättre struktur och testbarhet.
+- **Facade Pattern:** Erbjuder en förenklad yta för komplexa operationer, vilket minskar beroenden i koden.
+- **SOLID-principer:** Särskilt Single Responsibility & Dependency Inversion, för att skapa modulär, robust och lättunderhållen kod.
 
 ## 💻 Kodexempel
 
-**IProductBase Interface**
+**IProductBase Interface:**
 ```csharp
-namespace HenriksHobbyLager.Interfaces
+public interface IProductBase
 {
-    public interface IProductBase
-    {
-        string Name { get; set; }
-        decimal Price { get; set; }
-        int Stock { get; set; }
-    }
+    string Name { get; set; }
+    decimal Price { get; set; }
+    int Stock { get; set; }
 }
 ```
 
-**ProductFacade**
+**ProductFacade:**
 ```csharp
 public class ProductFacade : IProductFacade
 {
     private readonly IProductRepository _repository;
-
+    
     public ProductFacade(IProductRepository repository)
     {
         _repository = repository;
@@ -105,26 +99,17 @@ public class ProductFacade : IProductFacade
 }
 ```
 
-**CRUD i Repository**
-```csharp
-public void Create(Product product)
-{
-    _context.Products.Add(product);
-    _context.SaveChanges();
-}
-```
+## 🌟 Lärdomar & Framtid
 
-## 🎯 Lärdomar & Framtida Förbättringar
-
-- Ökad tydlighet och struktur gör koden lättare att underhålla.
-- Att använda separerade lager och interfaces möjliggör enklare testning.
-- I framtiden: mer automatiserade tester, förbättrad migrationshantering och ytterligare valideringar.
+- **Underhållbarhet:** Tydlig ansvarsuppdelning gör det enkelt att ändra och förbättra koden över tid.
+- **Testbarhet:** Med interfaces och separata lager kan funktioner testas isolerat.
+- **Framtida förbättringar:** Mer avancerad validering, fler enhetstester och smartare migrationshantering för databaser.
 
 ## 📜 Licens
 
-Projektet licensieras under [MIT License](./LICENSE).
+Detta projekt är tillgängligt under [MIT License](./LICENSE).
 
 ---
 
-<span style="color:#6A5ACD;">Tack för att du kikar på HenriksHobbyLager! 🎉</span>
+**Tack för att du besöker HenriksHobbyLager!** Om du har förslag, frågor eller vill bidra, tveka inte att skapa ett issue eller en pull request.
 ```
