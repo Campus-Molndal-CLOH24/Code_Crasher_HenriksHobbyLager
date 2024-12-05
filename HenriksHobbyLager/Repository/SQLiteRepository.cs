@@ -1,50 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Database;
+using System.Linq;
 
 namespace HenriksHobbyLager.Repository
 {
-    public class SQLiteRepository(SqliteDbContext context) : IProductRepository
+    public class SQLiteRepository(SqliteDbContext context) : IProductRepository<ProductSQLite>
     {
-        private readonly SqliteDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly SqliteDbContext _context = context;
 
-        // Hämta alla produkter
-        public IEnumerable<Product> GetAll()
+        public IEnumerable<ProductSQLite> GetAll()
         {
-            return [.. _context.Products];
+            return _context.Products.ToList();
         }
 
-        // Hämta en produkt baserat på ID
-        public Product? GetById(int id)
+        public ProductSQLite? GetById(string id)
         {
-            return _context.Products.FirstOrDefault(p => p.Id == id);
+            int intId = int.Parse(id);
+            return _context.Products.FirstOrDefault(p => p.Id == intId) ?? throw new KeyNotFoundException($"Produkt med ID {id} hittades inte.");
         }
 
-        // Lägg till en ny produkt
-        public void Create(Product product)
+        public void Create(ProductSQLite product)
         {
+            if (_context.Products.Any(p => p.Id == product.Id))
+            {
+                throw new InvalidOperationException($"En produkt med ID {product.Id} finns redan i databasen.");
+            }
+
+            if (_context.Products.Any(p => p.Name == product.Name))
+            {
+                throw new InvalidOperationException($"En produkt med namnet '{product.Name}' finns redan i databasen.");
+            }
+
             _context.Products.Add(product);
             _context.SaveChanges();
         }
 
-        // Uppdatera en befintlig produkt
-        public void Update(Product updatedProduct)
+        public void Update(ProductSQLite product)
         {
-            var existingProduct = _context.Products.Find(updatedProduct.Id);
-            if (existingProduct != null)
-            {
-                _context.Entry(existingProduct).CurrentValues.SetValues(updatedProduct);
-                _context.SaveChanges();
-            }
+            _context.Products.Update(product);
+            _context.SaveChanges();
         }
 
-        // Ta bort en produkt
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            var product = _context.Products.Find(id);
+            int intId = int.Parse(id);
+            var product = _context.Products.FirstOrDefault(p => p.Id == intId);
             if (product != null)
             {
                 _context.Products.Remove(product);
@@ -52,15 +53,16 @@ namespace HenriksHobbyLager.Repository
             }
         }
 
-        // Hämta produkter baserat på kategori
-        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        public IEnumerable<ProductSQLite> Search(string searchText, bool predicate)
         {
-            return [.. _context.Products.Where(p => p.CategoryId == categoryId)];
+            return _context.Products.Where(product =>
+                product.Name.Contains(searchText) &&
+                (predicate || product.Stock > 0)).ToList();
         }
-  
-        public IEnumerable<Product> Search(string searchText, bool predicate)
+
+        public IEnumerable<ProductSQLite> GetProductsByCategory(int categoryId)
         {
-            throw new NotImplementedException();
+            return _context.Products.Where(p => p.CategoryId == categoryId).ToList();
         }
     }
 }

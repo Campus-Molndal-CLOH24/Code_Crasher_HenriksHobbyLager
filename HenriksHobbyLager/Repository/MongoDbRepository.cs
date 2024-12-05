@@ -1,60 +1,66 @@
-﻿using HenriksHobbyLager.Database;
-using HenriksHobbyLager.Interfaces;
+﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using HenriksHobbyLager.Service;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HenriksHobbyLager.Repository
 {
-    public class MongoDBRepository : IProductRepository
+    public class MongoDBRepository(IMongoDatabase database) : IProductRepository<ProductMongo>
     {
-        private readonly IMongoCollection<Product> _products;
+        private readonly IMongoCollection<ProductMongo> _products = database.GetCollection<ProductMongo>("Products");
 
-        public MongoDBRepository(IMongoCollection<Product> products)
+        public IEnumerable<ProductMongo> GetAll()
         {
-            _products = products ?? throw new ArgumentNullException(nameof(products));
+            return _products.Find(product => true).ToList();
         }
 
-        public IEnumerable<Product> GetProductsByCategory(int categoryId)
+        public ProductMongo? GetById(string id)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.CategoryId, categoryId);
-            return _products.Find(filter).ToList(); // Returnera alla produkter som matchar kategoriId
+            return _products.Find(product => product.Id == id).FirstOrDefault();
         }
 
-        public IEnumerable<Product> GetAll()
+        public void Create(ProductMongo product)
         {
-            return _products.Find(_ => true).ToList(); // Hämta alla dokument i collectionen
+            try
+            {
+                if (_products.Find(p => p.Id == product.Id).Any())
+                {
+                    throw new InvalidOperationException($"En produkt med ID {product.Id} finns redan i databasen.");
+                }
+
+                _products.InsertOne(product);
+            }
+            catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            {
+                Console.WriteLine("Fel: Produkten kunde inte läggas till eftersom ID redan existerar.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ett oväntat fel uppstod: {ex.Message}");
+            }
         }
 
-        public Product? GetById(int id)
+        public void Update(ProductMongo product)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.Id, id);
-            return _products.Find(filter).FirstOrDefault(); // Hämta produkten med det angivna id:et
+            _products.ReplaceOne(p => p.Id == product.Id, product);
         }
 
-        public void Create(Product product)
+        public void Delete(string id)
         {
-            _products.InsertOne(product); // Lägg till produkten i MongoDB
+            _products.DeleteOne(product => product.Id == id);
         }
 
-        public void Update(Product product)
+        public IEnumerable<ProductMongo> Search(string searchText, bool predicate)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.Id, product.Id);
-            _products.ReplaceOne(filter, product); // Uppdatera produkten med motsvarande id
+            return _products.Find(product =>
+                product.Name.Contains(searchText) &&
+                (predicate || product.Stock > 0)).ToList();
         }
 
-        public void Delete(int id)
+        public IEnumerable<ProductMongo> GetProductsByCategory(int categoryId)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.Id, id);
-            _products.DeleteOne(filter); // Ta bort produkten med motsvarande id
-        }
-
-        public IEnumerable<Product> Search(string searchText, bool predicate)
-        {
-            var filter = Builders<Product>.Filter.Regex(p => p.Name, new MongoDB.Bson.BsonRegularExpression(searchText, predicate ? "i" : ""));
-            return _products.Find(filter).ToList(); // Returnera alla produkter som matchar söktexten
+            return _products.Find(product => product.CategoryId == categoryId).ToList();
         }
     }
 }

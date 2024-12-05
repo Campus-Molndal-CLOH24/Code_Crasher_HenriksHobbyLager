@@ -1,68 +1,61 @@
 ﻿using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
-using HenriksHobbyLager.Service;
-using HenriksHobbyLager;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HenriksHobbyLager.Repository
 {
-    // Denna klass implementerar IProductRepository och ansvarar för CRUD-operationer på en lista av produkter, enligt Repository-mönstret.
-    public class ProductRepository : IProductRepository
+    public class ProductRepository<T>(IProductRepository<T> repository) : IProductRepository<T>
     {
-        // Den privata listan '_products' fungerar som en temporär lagringslösning för produktdata i minnet.
-        private readonly List<Product> _products = new();
+        private readonly IProductRepository<T> _repository = repository;
 
-        // Metoden 'GetAll' returnerar alla produkter i listan.
-        public IEnumerable<Product> GetAll()
+        public IEnumerable<T> GetAll()
         {
-            return _products;
+            return _repository.GetAll();
         }
 
-        // Metoden 'GetById' söker efter en produkt baserat på id och returnerar den, eller null om den inte finns.
-        public Product? GetById(int id)
+        public T? GetById(string id)
         {
-            return _products.FirstOrDefault(p => p.Id == id);
+            return _repository.GetById(id);
         }
 
-        // Metoden 'Create' lägger till en ny produkt i listan.
-        public void Create(Product product)
+        public void Create(T product)
         {
-            _products.Add(product);
+            _repository.Create(product);
         }
 
-        // Metoden 'Update' uppdaterar informationen för en befintlig produkt, om den finns i listan.
-        public void Update(Product product)
+        public void Update(T product)
         {
-            var existingProduct = GetById(product.Id);
-            if (existingProduct != null)
+            _repository.Update(product);
+        }
+
+        public void Delete(string id)
+        {
+            _repository.Delete(id);
+        }
+
+        public IEnumerable<T> Search(string searchText, bool predicate)
+        {
+            return _repository.Search(searchText, predicate);
+        }
+
+        public IEnumerable<T> GetProductsByCategory(int categoryId)
+        {
+            if (typeof(T) == typeof(ProductSQLite))
             {
-                existingProduct.Name = product.Name;
-                existingProduct.Price = product.Price;
-                existingProduct.Stock = product.Stock;
+                var sqliteRepo = _repository as IProductRepository<ProductSQLite>;
+                var sqliteProducts = sqliteRepo?.GetProductsByCategory(categoryId) ?? Enumerable.Empty<ProductSQLite>();
+                return sqliteProducts.Cast<T>(); // Typkonvertering till IEnumerable<T>
             }
-        }
-
-        // Metoden 'Delete' tar bort en produkt baserat på dess id om produkten finns i listan.
-        public void Delete(int id)
-        {
-            var product = GetById(id);
-            if (product != null)
+            else if (typeof(T) == typeof(ProductMongo))
             {
-                _products.Remove(product);
+                var mongoRepo = _repository as IProductRepository<ProductMongo>;
+                var mongoProducts = mongoRepo?.GetProductsByCategory(categoryId) ?? Enumerable.Empty<ProductMongo>();
+                return mongoProducts.Cast<T>(); // Typkonvertering till IEnumerable<T>
             }
-        }
-
-        // Metoden 'GetProductsByCategory' returnerar alla produkter som tillhör en specifik kategori, baserat på categoryId.
-        public IEnumerable<Product> GetProductsByCategory(int categoryId)
-        {
-            return _products.Where(p => p.CategoryId == categoryId).ToList();
-        }
-
-        // Metoden 'Search' söker efter produkter vars namn innehåller den givna söktexten.
-        public IEnumerable<Product> Search(string searchText, bool predicate)
-        {
-            return _products.Where(p => p.Name.Contains(searchText));
+            else
+            {
+                throw new NotSupportedException("GetProductsByCategory stöds inte för denna typ.");
+            }
         }
     }
 }
+

@@ -7,8 +7,9 @@
 
 ## Kodare
 
-- 
-- 
-- 
-- 
+- Albin Stenhoff
+- Amir
+- Nor
+- Huss
+- Yotaka
 - 
