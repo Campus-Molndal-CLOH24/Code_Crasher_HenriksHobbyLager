@@ -13,7 +13,7 @@
 
 1. **Klona projektet:**
    ```bash
-   git clone <https://github.com/Campus-Molndal-CLOH24/Code_Crasher_HenriksHobbyLager>
+   git clone https://github.com/Campus-Molndal-CLOH24/Code_Crasher_HenriksHobbyLager
    ```
    
 2. **Installera beroenden:**  
