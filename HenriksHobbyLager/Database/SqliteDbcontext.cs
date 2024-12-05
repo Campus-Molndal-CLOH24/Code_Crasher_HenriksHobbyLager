@@ -1,18 +1,21 @@
 using HenriksHobbyLager.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class SqliteDbContext : DbContext
+namespace HenriksHobbyLager.Database
 {
-    public DbSet<Product> Products { get; set; } = null!;
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public class SqliteDbContext : DbContext
     {
-        optionsBuilder.UseSqlite("Data Source=C:\\Users\\albin\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\HenriksHobbyLager.db");
-    }
+        public DbSet<ProductSQLite> Products { get; set; } = null!;
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Product>()
-            .HasKey(p => p.Id); // Definiera Id som primärnyckel
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=C:\\Users\\albin\\Code_Crasher_HenriksHobbyLager\\HenriksHobbyLager\\HenriksHobbyLager.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductSQLite>()
+                .HasKey(p => p.Id); // Definiera Id som primärnyckel
+        }
     }
 }

@@ -1,16 +1,13 @@
-using HenriksHobbyLager.Models;
-
+using System.Collections.Generic;
 
 namespace HenriksHobbyLager.Interfaces
 {
-    public interface IProductFacade
+    public interface IProductFacade<T>
     {
-        IEnumerable<Product> GetAllProducts();
-        Product? GetProductById(int id);
-        void CreateProduct(Product product);
-        void UpdateProduct(Product product);
-        void DeleteProduct(int id);
-        IEnumerable<Product> SearchProducts(string searchText, bool predicate);
-        IEnumerable<Product> GetProductsByCategory(int categoryId);
+        IEnumerable<T> GetAllProducts();
+        T GetProductById(string id);
+        void CreateProduct(T product);
+        void UpdateProduct(T product);
+        void DeleteProduct(string id);
     }
 }
