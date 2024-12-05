@@ -112,4 +112,3 @@ Detta projekt är tillgängligt under [MIT License](./LICENSE).
 ---
 
 **Tack för att du besöker HenriksHobbyLager!** Om du har förslag, frågor eller vill bidra, tveka inte att skapa ett issue eller en pull request.
-```
