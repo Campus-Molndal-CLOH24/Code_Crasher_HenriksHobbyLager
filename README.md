@@ -1,48 +1,45 @@
 ```markdown
 # HenriksHobbyLager
 
-HenriksHobbyLager är ett hobbyprojekt som simulerar lagerhantering av hobbyprodukter. Projektet är byggt i C# och använder SQLite och MongoDB för datahantering. Syftet är att demonstrera en tydlig arkitektur, implementering av designmönster och separering av ansvar i koden. Applikationen erbjuder ett menybaserat konsolgränssnitt för att visa, lägga till, uppdatera, ta bort samt söka produkter.
+<span style="color:#00BFFF;">**HenriksHobbyLager**</span> är ett hobbyprojekt byggt i **C#** för att simulera lagerhantering av hobbyprodukter. Projektet använder en kombination av <span style="color:#FFA07A;">**SQLite**</span> och <span style="color:#FF8C00;">**MongoDB**</span> för datalagring, samt erbjuder ett menybaserat konsolgränssnitt för interaktion. Syftet är att visa upp tydlig arkitektur, SOLID-principer och designmönster för en enkel, underhållbar och skalbar kodbas.
 
-## Installation
+## ✨ Funktioner
 
-1. Klona detta repository till din lokala maskin:  
-   ```sh
-   git clone <repo-url>
+- <span style="color:#32CD32;">**CRUD-operationer**</span> (Skapa, Läs, Uppdatera, Ta bort produkter)
+- <span style="color:#FF69B4;">Sökning</span> efter produkter baserat på kategori
+- Val mellan två databaser: <span style="color:#FFA07A;">SQLite</span> och <span style="color:#FF8C00;">MongoDB</span>
+- Konsolbaserat, enkelt menygränssnitt
+
+## 🚀 Installation
+
+1. Klona repo:t  
+   ```bash
+   git clone <https://github.com/Campus-Molndal-CLOH24/Code_Crasher_HenriksHobbyLager>
    ```
 
-2. Installera nödvändiga beroenden via NuGet, till exempel:  
-   - `Microsoft.EntityFrameworkCore.Sqlite` för SQLite-hantering.
+2. Installera beroenden:  
+   - `Microsoft.EntityFrameworkCore.Sqlite`
+   - `MongoDB.Driver`
 
-3. Öppna projektet i Visual Studio och se till att alla paket är installerade.
+3. Bygg och kör i Visual Studio (F5)
 
-## Hur man kör programmet
+## 🛠 Hur man kör programmet
 
-1. Bygg projektet i Visual Studio (F5).
-2. Navigera genom konsolmenyn för att visa produkter, lägga till nya, uppdatera befintliga eller söka efter produkter.
-3. Använd tangentbordet för att göra menyval.
+Starta applikationen och följ menyerna för att visa, lägga till, uppdatera eller ta bort produkter. Du kan även söka baserat på kategori. Använd piltangenter och siffror för att navigera genom alternativen.
 
-## Konfigurationsinställningar
+## 📦 Databasstruktur
 
-- **SQLite-databas**: En lokal SQLite-databas används för att lagra produktinformation. `SqliteDbContext` konfigurerar och interagerar med databasfilen `HenriksHobbyLager.db`.
+**SQLite (Products-tabell)**  
+- Id (INT, primärnyckel)  
+- Name (TEXT)  
+- Price (REAL)  
+- Stock (INT)  
+- CategoryId (INT)
 
-## Implementerade Patterns
+**MongoDB**  
+- Liknande fält som i SQLite, men lagras som dokument.
 
-- **Repository Pattern**: Används för att separera dataåtkomstlogik från affärslogik. Detta gör koden mer lättunderhållen och testbar.
-- **Facade Pattern**: `ProductFacade` erbjuder en enkel ingångspunkt till produktrelaterade operationer, vilket minskar komplexiteten för resten av applikationen.
-
-## Databasstruktur
-
-- **SQLite**:  
-  Tabellen `Products` innehåller:  
-  - `Id` (Primärnyckel, INT)  
-  - `Name` (Produktnamn, TEXT)  
-  - `Price` (Pris, REAL)  
-  - `Stock` (Antal i lager, INT)  
-  - `CategoryId` (ID för kategori, INT)
-
-## Projektstruktur och Refaktorisering
-
-Koden är organiserad för att följa Single Responsibility Principle, vilket ökar läsbarhet och underhållbarhet. Den uppdaterade filstrukturen visas nedan:
+## 📂 Projektstruktur
 
 ```bash
 HenriksHobbyLager/
@@ -69,32 +66,15 @@ HenriksHobbyLager/
 └─ Program.cs
 ```
 
-### Fördelar med Projektstrukturen
+## 🎨 Designmönster & SOLID
 
-1. **Enkel Underhållbarhet**: Tydligt ansvar per klass gör felsökning och uppdateringar enklare.
-2. **Bättre Återanvändbarhet**: Mindre, specialiserade klasser förenklar återanvändning av kod.
-3. **Förbättrad Testbarhet**: Användning av interfaces och separata lager gör enhetstester mer isolerade.
-4. **Lättare Att Utvidga**: Med en välstrukturerad arkitektur blir det enkelt att lägga till nya funktioner eller datakällor.
+- <span style="color:#00CED1;">**Repository Pattern**</span> för att separera dataåtkomstlogik.  
+- <span style="color:#DC143C;">**Facade Pattern**</span> för enklare åtkomst till produktoperationer.  
+- SOLID-principer (särskilt SRP & DIP) för bättre struktur och testbarhet.
 
-## Sammanfattning av Arbetet i Projektet
+## 💻 Kodexempel
 
-### 1. Teknisk Implementation
-
-- **SOLID-principer**: Single Responsibility (SRP) och Dependency Inversion (DIP) tillämpas.  
-- **Databas**: SQLite används för lokal lagring.  
-- **Designmönster**: Repository- och Facade-pattern tillämpas för bättre separation av ansvar.  
-- **Utmaningar**: Hantering av dubblettnycklar i MongoDB samt integration av två databaser löstes med validering och gemensamma gränssnitt.
-
-### 2. Arbetsprocess
-
-- **Planering**: Funktioner definierades och bröts ner i mindre delar.  
-- **Val av Teknik**: SQLite för enkel lokal datalagring.  
-- **Lärdomar**: Ökat fokus på tydlig kodstruktur och SOLID-principer.  
-- **Framtida Förbättringar**: Mer fokus på enhetstester och robust migrationshantering.
-
-### 3. Kod-exempel
-
-**IProductBase Interface** - Grundläggande egenskaper för en produkt:  
+**IProductBase Interface**
 ```csharp
 namespace HenriksHobbyLager.Interfaces
 {
@@ -107,9 +87,9 @@ namespace HenriksHobbyLager.Interfaces
 }
 ```
 
-**ProductFacade** - Enkel åtkomst till produktfunktionalitet:  
+**ProductFacade**
 ```csharp
-public class ProductFacade
+public class ProductFacade : IProductFacade
 {
     private readonly IProductRepository _repository;
 
@@ -125,7 +105,7 @@ public class ProductFacade
 }
 ```
 
-**Repository Pattern** - Isolerar databaslogik:  
+**CRUD i Repository**
 ```csharp
 public void Create(Product product)
 {
@@ -134,25 +114,17 @@ public void Create(Product product)
 }
 ```
 
-**Interfaces** - Gör koden flexibel och testbar:  
-```csharp
-public class ProductService
-{
-    private readonly IProductRepository _repository;
+## 🎯 Lärdomar & Framtida Förbättringar
 
-    public ProductService(IProductRepository repository)
-    {
-        _repository = repository;
-    }
+- Ökad tydlighet och struktur gör koden lättare att underhålla.
+- Att använda separerade lager och interfaces möjliggör enklare testning.
+- I framtiden: mer automatiserade tester, förbättrad migrationshantering och ytterligare valideringar.
 
-    public void AddProduct(Product product)
-    {
-        _repository.Create(product);
-    }
-}
-```
+## 📜 Licens
 
-## Sammanfattning
+Projektet licensieras under [MIT License](./LICENSE).
 
-HenriksHobbyLager demonstrerar hur tydlig struktur, SOLID-principer och designmönster kan leda till ett lättunderhållet, utbyggbart och testbart system. Genom att separera affärslogik, datatillgång och användargränssnitt blir koden mer överskådlig och flexibel. Detta projekt har gett värdefulla insikter i hur man bygger robusta applikationer med fokus på kvalitet, återanvändbarhet och underhållbarhet.
+---
+
+<span style="color:#6A5ACD;">Tack för att du kikar på HenriksHobbyLager! 🎉</span>
 ```
