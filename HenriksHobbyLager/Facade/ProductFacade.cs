@@ -3,9 +3,12 @@ using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 namespace HenriksHobbyLager.Facade;
 
+using HenriksHobbyLager.Repositories;
+using MongoDB.Bson;
+
 public class ProductFacade : IProductFacade
 {
-    private readonly IRepository<Product> _productRepository;
+    private readonly IRepository<Product> _productRepository; //for sql 
     public ProductFacade(IRepository<Product> productRepository)
     {
         _productRepository = productRepository;
@@ -13,7 +16,7 @@ public class ProductFacade : IProductFacade
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync(); //delegate to repository
+            return await _productRepository.GetAllAsync();
         }
 
         public async Task<Product> GetProductAsync(int id)
@@ -21,26 +24,20 @@ public class ProductFacade : IProductFacade
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
-                throw new ArgumentException("Product not found");
+                throw new ArgumentException("Hitta inte produkt");
             }
             return product;
         }
 
         public async Task CreateProductAsync(Product product)
         {
-            if (product == null)
-            {
-                throw new ArgumentNullException(nameof(product));
-            }
+            
             await _productRepository.AddAsync(product);
         }
 
         public async Task UpdateProductAsync(Product product)
         {
-            if (product == null)
-            {
-                throw new ArgumentNullException(nameof(product));
-            }
+
             await _productRepository.UpdateAsync(product);
         }
 

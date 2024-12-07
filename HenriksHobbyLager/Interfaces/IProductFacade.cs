@@ -1,5 +1,6 @@
 namespace HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
+using MongoDB.Bson;
 
 public interface IProductFacade
 {

@@ -1,53 +1,68 @@
-
 using HenriksHobbyLager.UIs;
 using HenriksHobbyLager.Facade;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Database;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using HenriksHobbyLager.Repository;
-using Microsoft.EntityFrameworkCore.SqlServer;
+using HenriksHobbyLager.Interfaces;
+using HenriksHobbyLager.Models;
+using MongoDB.Bson;
+using DotNetEnv;
 
 namespace HenriksHobbyLager
 {
     static class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            // Create MongoDB context
-            var mongoDbContext = new MongoDbContext(
-                  // connection string
-                "ProductsHobbyLager"          // database name
-            );
+
+            Env.Load();
+            // Connection strings for SQLite and MongoDB (you can replace them with your actual strings)
+            string sqliteConnectionString = "Data Source=mydatabase.db"; // SQLite connection string
+            string mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING") ?? string.Empty;
             
-            // Create SQL context
-            var options = new DbContextOptionsBuilder<SqlDbcontext>()
-                .UseSqlServer("Server=localhost\\SQLEXPRESS,1433;Database=ProductsHobbyLager;Integrated Security=True;TrustServerCertificate=True")
-                .Options;
-            var sqlContext = new SqlDbcontext(options);
 
-            // Create SQLite context
-            var sqliteOptions = new DbContextOptionsBuilder<SqliteDbcontext>()
-                .UseSqlite("Data Source=ProductsHobbyLager.db")
-                .Options;
-            var sqliteContext = new SqliteDbcontext(sqliteOptions);
+            if (string.IsNullOrEmpty(mongoDbConnectionString))
+            {
+                Console.WriteLine("MongoDB connection string is not set. Exiting.");
+                return;
+            }
 
-            // Create the DatabaseFactory with all required dependencies
-            var databaseFactory = new DatabaseFactory(sqlContext, mongoDbContext, sqliteContext);
+            Console.WriteLine("Which database would you like to use? (1 for MongoDB, 2 for SQLite)");
+            string choice = Console.ReadLine() ?? string.Empty;
 
-            // Get repository through DatabaseMenu
-            var databaseMenu = new DatabaseMenu(databaseFactory);
-            var repository = databaseMenu.GetSelectedRepository();
+            IRepository<Product> repository;
 
-            // Create facade with repository
-            var productFacade = new ProductFacade(repository);
+            if (choice == "1")
+            {
+                // Create MongoDB client and database
+                var client = new MongoClient(mongoDbConnectionString);
+                var database = client.GetDatabase("productdb");
+                var context = new MongoDbContext(database); // Create the context
+                repository = new MongoDbRepository(context); // Directly instantiate the repository
+            }
+            else if (choice == "2")
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<SqliteDbcontext>();
+                optionsBuilder.UseSqlite(sqliteConnectionString); // Set the SQLite connection string
 
-            // Instantiate ConsoleMenuHandler with dependencies
-            var menuHandler = new ConsoleMenuHandler(productFacade, databaseFactory);
+                var sqliteContext = new SqliteDbcontext(optionsBuilder.Options); // Pass the options
+                repository = new SqliteRepository(sqliteContext);
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice");
+                return;
+            }
 
-            // Show the main menu
-            menuHandler.ShowMainMenu();
+            var facade = new ProductFacade(repository); // Pass the repository to the facade
+            var menu = new ConsoleMenuHandler(facade);
+            await menu.ShowMainMenu(); // Assuming ShowMainMenu is async
         }
+
+
     }
 }
 

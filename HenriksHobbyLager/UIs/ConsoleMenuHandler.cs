@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using HenriksHobbyLager.Database;
+﻿
 using Microsoft.EntityFrameworkCore;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Interfaces;
@@ -8,28 +7,30 @@ using System.IO;
 using HenriksHobbyLager.Repository;
 using System.Globalization;
 using MongoDB.Driver;
+using HenriksHobbyLager.Database;
+using Microsoft.Extensions.Configuration;
+
 
 
 namespace HenriksHobbyLager.UIs;
 class ConsoleMenuHandler
 {
     private readonly IProductFacade _facade;
-    private readonly IRepository<Product> _repository;
-    
-    
-    
-    public ConsoleMenuHandler(IProductFacade facade, DatabaseFactory databaseFactory)
+
+
+
+    public ConsoleMenuHandler(IProductFacade facade)
     {
-        // Initialize the repository based on selected database
-        var _databaseMenu = new DatabaseMenu(databaseFactory);
-        _repository = _databaseMenu.GetSelectedRepository();
 
         // Initialize the facade with the selected repository
         _facade = facade;
+
+
     }
 
-    public void ShowMainMenu()
+    public async Task ShowMainMenu()
     {
+
         while (true)
         {
             Console.Clear();  // Rensar skärmen så det ser proffsigt ut
@@ -47,19 +48,19 @@ class ConsoleMenuHandler
             switch (choice)
             {
                 case "1":
-                    ShowAllProducts();
+                    await ShowAllProductsAsync();
                     break;
                 case "2":
-                    AddProduct();
+                    await CreateProductAsync();
                     break;
                 case "3":
-                    UpdateProduct();
+                    await UpdateProductAsync();
                     break;
                 case "4":
-                    DeleteProduct();
+                    await DeleteProductAsync();
                     break;
                 case "5":
-                    SearchProducts();
+                    await SearchProductAsync();
                     break;
                 case "6":
                     return;  // OBS! All data försvinner om du väljer denna!
@@ -77,16 +78,16 @@ class ConsoleMenuHandler
         Console.ReadKey();
     }
 
-    private void ShowAllProducts()
+    private async Task ShowAllProductsAsync()
     {
-        var products = _facade.GetAllProducts();
+        var products = await _facade.GetAllProductsAsync();
         foreach (var product in products)
         {
             Console.WriteLine($"ID: {product.Id}, Namn: {product.Name}, Pris: {product.Price}kr, Lager: {product.Stock}");
         }
     }
     // use error handling to controll user input
-    private void AddProduct()
+    private async Task CreateProductAsync()
     {
         try
         {
@@ -117,8 +118,8 @@ class ConsoleMenuHandler
                         LastUpdated = DateTime.UtcNow
                     };
 
-                    _repository.Add(product);
-                    
+                    await _facade.CreateProductAsync(product);
+
                     Console.WriteLine("Produkt tillagd!");
                 }
                 else
@@ -146,12 +147,12 @@ class ConsoleMenuHandler
     }
 
     //updated error handling 
-    private void UpdateProduct()
+    private async Task UpdateProductAsync()
     {
         Console.WriteLine("Ange produkt-ID att uppdatera:");
         if (int.TryParse(Console.ReadLine(), out int id))
         {
-            var product = _repository.GetById(id);
+            var product = await _facade.GetProductAsync(id);
             if (product != null)
             {
                 Console.WriteLine("Ange nytt namn (eller tryck Enter för att behålla nuvarande):");
@@ -166,7 +167,7 @@ class ConsoleMenuHandler
 
                 try
                 {
-                    _repository.Update(product); // change from savechanges to update
+                    await _facade.UpdateProductAsync(product); // change from savechanges to update
                     Console.WriteLine("Produkt uppdaterad!");
                 }
                 catch (Exception ex)
@@ -182,15 +183,15 @@ class ConsoleMenuHandler
         }
     }
 
-    private void DeleteProduct()
+    private async Task DeleteProductAsync()
     {
         Console.WriteLine("Ange produkt-ID att ta bort:");
         if (int.TryParse(Console.ReadLine(), out int id))
         {
-            var product = _repository.GetById(id);
+            var product = await _facade.GetProductAsync(id);
             if (product != null)
             {
-                _repository.Delete(id);
+                await _facade.DeleteProductAsync(id);
                 Console.WriteLine("Produkt borttagen!");
             }
             else
@@ -200,12 +201,12 @@ class ConsoleMenuHandler
         }
     }
 
-    private void SearchProducts()
+    private async Task SearchProductAsync()
     {
         Console.WriteLine("Ange sökterm:");
         var searchTerm = Console.ReadLine()?.ToLower() ?? "";
 
-        var products = _facade.GetAllProducts()
+        var products = (await _facade.GetAllProductsAsync())
             .Where(p => p.Name != null && p.Name.ToLower().Contains(searchTerm))
             .ToList();
 

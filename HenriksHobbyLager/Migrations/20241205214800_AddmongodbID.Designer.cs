@@ -3,6 +3,7 @@ using System;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HenriksHobbyLager.Migrations
 {
     [DbContext(typeof(SqliteDbcontext))]
-    partial class SqliteDbcontextModelSnapshot : ModelSnapshot
+    [Migration("20241205214800_AddmongodbID")]
+    partial class AddmongodbID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");

@@ -47,6 +47,11 @@ namespace HenriksHobbyLager.Repositories
         // Add an entity to the database
         public async Task AddAsync(Product product)
         {
+            var existingProduct = await _dbSet.FindAsync();
+            if (existingProduct != null)
+            {
+                throw new InvalidOperationException($"Product with Id {product.Id} already exists.");
+            }
             _dbSet.Add(product); //synconous version
             await _context.SaveChangesAsync();
         }

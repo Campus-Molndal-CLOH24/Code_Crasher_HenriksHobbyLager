@@ -2,6 +2,7 @@ using HenriksHobbyLager.Interfaces;
 using HenriksHobbyLager.Models;
 using HenriksHobbyLager.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 
 namespace HenriksHobbyLager.Repository
@@ -13,6 +14,8 @@ namespace HenriksHobbyLager.Repository
         {
             _sqliteDbcontext = sqliteDbcontext;
         }
+        
+
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _sqliteDbcontext.Product.ToListAsync();
@@ -32,7 +35,7 @@ namespace HenriksHobbyLager.Repository
         {
             _sqliteDbcontext.Product.Add(entity);
             await _sqliteDbcontext.SaveChangesAsync();
-        }   
+        }
         //try catch to handle concurrency issues
         //use permisstic concurrency to handle when multiple users are updating the same product
         public async Task UpdateAsync(Product entity)

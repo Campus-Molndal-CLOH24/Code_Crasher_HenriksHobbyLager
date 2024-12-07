@@ -607,6 +607,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+# for sensetive case conenction string 
+.env
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
